@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
+        app:cardCornerRadius="6dp"
+        android:id="@+id/stateDataCard"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/purple_700"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/cardParentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/locationNameTextView"
+                android:text="Uttarakhand"
+                android:textColor="#000"
+                android:layout_toStartOf="@id/confirmedCasesLayout"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:textSize="25sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:orientation="vertical"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/confirmedCasesLayout">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirmed" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/confirmedCaseTextView"
+                    android:text="000"
+                    android:textSize="20sp"
+                    android:textColor="@color/teal_700"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/recoveredCountLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/locationNameTextView"
+                android:layout_marginStart="10dp"
+                android:layout_alignBottom="@id/deathCasesLayout"
+                android:gravity="bottom"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recovered" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/recoveredTextView"
+                    android:text="00"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:textColor="@color/teal_200" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:orientation="vertical"
+                android:layout_below="@id/locationNameTextView"
+                android:layout_marginEnd="10dp"
+                android:layout_alignStart="@id/confirmedCasesLayout"
+                android:layout_marginTop="15dp"
+                android:id="@+id/deathCasesLayout">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deaths" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/deathsTextView"
+                    android:text="000"
+                    android:textColor="#000"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="View more"
+                android:textAlignment="center"
+                android:id="@+id/viewMoreText"
+                android:layout_below="@+id/recoveredCountLayout" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:id="@+id/moreDataLayout"
+
+                android:orientation="vertical"
+                android:layout_below="@id/recoveredCountLayout">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_horizontal"
+                        android:layout_marginEnd="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            android:textColor="@color/purple_500"
+                            android:id="@+id/indianCitizen_expandedCard" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active cases"
+                            android:textColor="#000"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_horizontal"
+                        android:layout_marginEnd="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            android:textColor="@color/purple_200"
+                            android:id="@+id/foreigner_expandedCard" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Source"
+                            android:textColor="#000"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="5dp"
+                    android:gravity="center_horizontal"
+                    android:layout_marginEnd="5dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="00154545454"
+                        android:textStyle="bold"
+                        android:textSize="22sp"
+                        android:drawableStart="@drawable/ic_local_phone_black_24dp"
+                        android:drawablePadding="6dp"
+                        android:autoLink="phone"
+                        android:textColorLink="@color/teal_200"
+                        android:textColor="#00FF00"
+                        android:id="@+id/helpline_expandedCard" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Helpline Number"
+                        android:textColor="#000"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

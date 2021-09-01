@@ -6,6 +6,7 @@ import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.coronatracker.DataClasses.Root;
 import com.example.coronatracker.R;
 import com.google.android.material.card.MaterialCardView;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -23,7 +25,6 @@ import java.util.List;
 public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold> {
     boolean expanded=false;
     List<Root> list;
-
     public countryAdapter(List<Root> list) {
         this.list = list;
     }
@@ -71,7 +72,8 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
         TextView deathsPerMillion= holder.deathsPerMillion;
         TextView viewMore= holder.viewMore;
         LinearLayout moreDataLayout= holder.moreDataLayout;
-        MaterialCardView box= holder.box;
+        MaterialCardView box = holder.box;
+        ImageView countryFlag = holder.countryFlag;
 
         country.setText(String.valueOf(data.country));
         totalPopulation.setText(String.valueOf(data.population));
@@ -84,6 +86,7 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
         criticalCases.setText(String.valueOf(data.critical));
         casesPerMillion.setText(String.valueOf(data.casesPerOneMillion));
         deathsPerMillion.setText(String.valueOf(data.deathsPerOneMillion));
+        Picasso.get().load(data.countryInfo.flag).noFade().resize(50, 22).into(countryFlag);
 
         box.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +118,7 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
                 ,deathsPerMillion, viewMore;
         LinearLayout moreDataLayout;
         MaterialCardView box;
+        ImageView countryFlag;
         public viewHold(@NonNull View itemView) {
             super(itemView);
             country=itemView.findViewById(R.id.locationNameTextView);
@@ -130,7 +134,8 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
             deathsPerMillion=itemView.findViewById(R.id.deathsPerMillion_expandedCard);
             viewMore=itemView.findViewById(R.id.viewMoreText);
             moreDataLayout=itemView.findViewById(R.id.moreDataLayout);
-            box=itemView.findViewById(R.id.globalDataCard);
+            box = itemView.findViewById(R.id.globalDataCard);
+            countryFlag = itemView.findViewById(R.id.country_flag);
         }
     }
 }

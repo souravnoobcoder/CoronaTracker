@@ -1,6 +1,7 @@
 package com.example.coronatracker.Api;
 
 import com.example.coronatracker.DataClasses.Root;
+import com.example.coronatracker.DataClasses.world;
 
 import java.util.List;
 
@@ -12,4 +13,7 @@ import retrofit2.http.Query;
 public interface methods {
     @GET("covid-19/countries")
     Call<List<Root>> getData();
+
+    @GET("all?yesterday")
+    Call<world> getWorld();
 }
