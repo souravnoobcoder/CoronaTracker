@@ -109,7 +109,7 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
 
     @Override
     public int getItemCount() {
-        return list.size()==0 ? 0 : list.size();
+        return list==null ? 0 : list.size();
     }
 
     public class viewHold extends RecyclerView.ViewHolder {

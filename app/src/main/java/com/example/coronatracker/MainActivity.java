@@ -1,25 +1,28 @@
 package com.example.coronatracker;
 
+import static com.example.coronatracker.Fragments.BlankFragment.ARG_PARAM1;
+
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentContainerView;
 
-import com.example.coronatracker.Adapters.countryAdapter;
 import com.example.coronatracker.Api.methods;
 import com.example.coronatracker.Api.newApi;
 import com.example.coronatracker.DataClasses.Root;
 import com.example.coronatracker.DataClasses.world;
+import com.example.coronatracker.Fragments.BlankFragment;
+import com.example.coronatracker.Fragments.Launching;
 import com.google.android.material.appbar.AppBarLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,18 +35,20 @@ public class MainActivity extends AppCompatActivity {
     TextView totalPopulation, confirmed, recovered, deaths,
             casesToday, activeCases, deathsToday, criticalCases, casesPerMillion, deathsPerMillion, viewMore;
     LinearLayout moreDataLayout;
-
+    FragmentContainerView startUp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        startUp=findViewById(R.id.launching);
+        settingStart();
+
         initialize();
-        RecyclerView recyclerView = findViewById(R.id.recycle);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
 
         methods worldM=newApi.getWorld().create(methods.class);
-        worldM.getWorld().enqueue(new Callback<com.example.coronatracker.DataClasses.world>() {
+        worldM.getWorld().enqueue(new Callback<world>() {
             @Override
             public void onResponse(Call<world> call, Response<world> response) {
                 world w=response.body();
@@ -62,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         method.getData().enqueue(new Callback<List<Root>>() {
             @Override
             public void onResponse(@NonNull Call<List<Root>> call, @NonNull Response<List<Root>> response) {
-                recyclerView.setAdapter(new countryAdapter(response.body()));
+               setFragment(response.body());
             }
 
             @Override
@@ -116,5 +121,21 @@ public class MainActivity extends AppCompatActivity {
         casesPerMillion = findViewById(R.id.casesPerMillion_expandedCard);
         deathsPerMillion = findViewById(R.id.deathsPerMillion_expandedCard);
 
+    }
+    public void setFragment(List<Root> root) {
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(ARG_PARAM1, (ArrayList<? extends Parcelable>) root);
+        startUp.setVisibility(View.GONE);
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .addToBackStack("BACK_STACK")
+                .replace(R.id.recycle_fragment,BlankFragment.class,args)
+                .commit();
+    }
+    public void settingStart(){
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.recycle_fragment, Launching.class,null)
+                .commit();
     }
 }
