@@ -12,6 +12,7 @@
             android:layout_marginTop="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             >
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -19,6 +20,7 @@
                 android:id="@+id/search_bar"
                 android:textSize="25sp"
                 android:paddingEnd="20dp"
+                android:hint="enter country"
                 android:drawableEnd="@drawable/search"/>
         </com.google.android.material.textfield.TextInputLayout>
     <androidx.recyclerview.widget.RecyclerView

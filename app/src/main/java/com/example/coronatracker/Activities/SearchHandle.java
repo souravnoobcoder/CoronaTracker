@@ -28,7 +28,7 @@ public class SearchHandle extends AppCompatActivity {
 
         inputEditText = findViewById(R.id.search_bar);
         adapter=new countryAdapter(null);
-        fullSearchingList = getIntent().getParcelableArrayListExtra(getString(R.string.intent_search));
+        fullSearchingList = getIntent().getExtras().getParcelableArrayList(getString(R.string.intent_search));
         RecyclerView recyclerView = findViewById(R.id.searched_countries);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

@@ -10,19 +10,22 @@
         <entry key="..\:/Users/pro/.gradle/caches/transforms-3/bba32e201e555e1b4cfc7a8a566f4f1f/transformed/jetified-mobilertc/res/layout/zm_sip_pop_up.xml" value="0.1921875" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/CoronaTracker/app/src/main/res/layout/activity_main.xml" value="0.19849381387842926" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/drawable/ic_local_phone_black_24dp.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/drawable/search.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/drawable/shape_of_main.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/activity_map.xml" value="0.178125" />
-        <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/activity_search_handle.xml" value="0.2" />
+        <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/activity_search_handle.xml" value="0.22" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/content_map.xml" value="0.1921875" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/corona_list_item.xml" value="0.33" />
+        <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/country_data.xml" value="0.1921875" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/for_state.xml" value="0.25" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/fragment_blank.xml" value="0.1921875" />
+        <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/fragment_india_state.xml" value="0.1921875" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/fragment_launching.xml" value="0.22" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/navigation.xml" value="0.22" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/sample.xml" value="0.25" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/text.xml" value="0.1" />
-        <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/menu/main_menu.xml" value="0.1921875" />
+        <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/menu/main_menu.xml" value="0.22" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/menu/navigation_menu.xml" value="0.22" />
       </map>
     </option>

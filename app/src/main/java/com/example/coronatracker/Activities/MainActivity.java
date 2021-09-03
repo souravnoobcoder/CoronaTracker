@@ -1,6 +1,7 @@
 package com.example.coronatracker.Activities;
 
 import static com.example.coronatracker.Fragments.countriesData.ARG_PARAM1;
+import static com.example.coronatracker.R.string.*;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -20,14 +21,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentContainerView;
 
 import com.example.coronatracker.Api.methods;
 import com.example.coronatracker.Api.newApi;
 import com.example.coronatracker.DataClasses.Root;
+import com.example.coronatracker.DataClasses.indianStates;
+import com.example.coronatracker.DataClasses.stateContacts;
 import com.example.coronatracker.DataClasses.world;
-import com.example.coronatracker.Fragments.countriesData;
 import com.example.coronatracker.Fragments.Launching;
+import com.example.coronatracker.Fragments.countriesData;
+import com.example.coronatracker.Fragments.indiaStateFragment;
 import com.example.coronatracker.R;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
@@ -39,15 +42,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener , android.widget.Toolbar.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+        , android.widget.Toolbar.OnMenuItemClickListener {
     boolean expanded = false;
     AppBarLayout box;
     TextView totalPopulation, confirmed, recovered, deaths,
             casesToday, activeCases, deathsToday, criticalCases, casesPerMillion, deathsPerMillion, viewMore;
     LinearLayout moreDataLayout;
-    FragmentContainerView startUp;
     private DrawerLayout drawer;
-    List<Root> rootList=new ArrayList<>();
+    List<Root> rootList;
+    indianStates states;
+    stateContacts contacts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                navigation_drawer_open, navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -93,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(@NonNull Call<List<Root>> call, @NonNull Response<List<Root>> response) {
                 assert response.body() != null;
                 setFragment(response.body());
-                rootList.addAll(response.body());
+                rootList = response.body();
             }
 
             @Override
@@ -140,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initializeValues() {
-        startUp=findViewById(R.id.launching);
         settingStart();
         viewMore = findViewById(R.id.viewMoreText);
         moreDataLayout = findViewById(R.id.moreDataLayout);
@@ -157,34 +162,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         deathsPerMillion = findViewById(R.id.deathsPerMillion_expandedCard);
 
     }
-    public void setFragment(List<Root> root) {
+
+    void setFragment(List<Root> root) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_PARAM1, (ArrayList<? extends Parcelable>) root);
-        startUp.setVisibility(View.GONE);
         getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .addToBackStack("BACK_STACK")
-                .replace(R.id.recycle_fragment, countriesData.class,args)
+                .replace(R.id.recycle_fragment, countriesData.class, args)
                 .commit();
     }
-    public void settingStart(){
+
+    void settingStart() {
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(false)
-                .replace(R.id.launching, Launching.class,null)
+                .replace(R.id.recycle_fragment, Launching.class, null)
                 .commit();
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int itemId=item.getItemId();
+        int itemId = item.getItemId();
         if (itemId == R.id.search) {
-            Intent intent=new Intent(MainActivity.this,SearchHandle.class);
-            intent.putParcelableArrayListExtra(getString(R.string.intent_search), (ArrayList<? extends Parcelable>) rootList);
+            Intent intent = new Intent(MainActivity.this, SearchHandle.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(getString(intent_search), (ArrayList<? extends Parcelable>) rootList);
+            intent.putExtras(bundle);
             startActivity(intent);
         } else if (itemId == R.id.call) {
             makeToast("Call");
         } else if (itemId == R.id.india_states) {
-            makeToast("India States");
+            startIndianState();
         } else if (itemId == R.id.safety) {
             makeToast("Safety");
         } else if (itemId == R.id.second || itemId == R.id.third) {
@@ -210,9 +216,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        if (item.getItemId()==R.id.search){
-
+        if (item.getItemId() == R.id.search) {
+            makeToast("go");
         }
         return false;
+    }
+
+    public void setStateFragment(indianStates states, stateContacts contacts) {
+        Bundle args = new Bundle();
+        args.putSerializable(getString(state_key), states);
+        args.putSerializable(getString(state_cont_key), contacts);
+        getSupportFragmentManager().beginTransaction()
+                .addToBackStack("stack")
+                .replace(R.id.recycle_fragment, indiaStateFragment.class, args)
+                .commit();
+    }
+
+    void startIndianState() {
+        methods myMethod = newApi.getIndiaState().create(methods.class);
+        myMethod.getStates().enqueue(new Callback<indianStates>() {
+            @Override
+            public void onResponse(@NonNull Call<indianStates> call, @NonNull Response<indianStates> response) {
+                states = response.body();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<indianStates> call, @NonNull Throwable t) {
+                makeToast("Failed to Get States");
+            }
+        });
+        myMethod.getContacts().enqueue(new Callback<stateContacts>() {
+            @Override
+            public void onResponse(@NonNull Call<stateContacts> call, @NonNull Response<stateContacts> response) {
+                contacts = response.body();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<stateContacts> call, @NonNull Throwable t) {
+                makeToast("Failed to Get States Contacts");
+            }
+        });
+        setStateFragment(states, contacts);
     }
 }

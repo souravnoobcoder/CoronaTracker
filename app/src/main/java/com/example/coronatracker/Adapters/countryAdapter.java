@@ -91,8 +91,7 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
         criticalCases.setText(String.valueOf(data.critical));
         casesPerMillion.setText(String.valueOf(data.casesPerOneMillion));
         deathsPerMillion.setText(String.valueOf(data.deathsPerOneMillion));
-       if (data.countryInfo.flag!=null)
-        Picasso.get().load(data.countryInfo.flag).noFade().resize(50, 22).into(countryFlag);
+//        Picasso.get().load(data.countryInfo.flag).noFade().resize(50, 22).into(countryFlag);
 
         box.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,6 +1,8 @@
 package com.example.coronatracker.Api;
 
 import com.example.coronatracker.DataClasses.Root;
+import com.example.coronatracker.DataClasses.indianStates;
+import com.example.coronatracker.DataClasses.stateContacts;
 import com.example.coronatracker.DataClasses.world;
 
 import java.util.List;
@@ -16,4 +18,10 @@ public interface methods {
 
     @GET("all?yesterday")
     Call<world> getWorld();
+
+    @GET("covid19-in/contacts")
+    Call<stateContacts> getContacts();
+
+    @GET("covid19-in/stats/latest")
+    Call<indianStates> getStates();
 }

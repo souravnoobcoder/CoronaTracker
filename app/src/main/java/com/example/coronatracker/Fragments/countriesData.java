@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class countriesData extends Fragment {
 
     public static final String ARG_PARAM1 = "param1";
-    static ArrayList<Root> DATA;
+    ArrayList<Root> DATA;
     countryAdapter adapter;
 
     public countriesData() {

@@ -12,5 +12,6 @@
     <string name="navigation_drawer_open">Open Navigation view</string>
     <string name="navigation_drawer_close">Close Navigation View</string>
     <string name="intent_search">key</string>
-
+    <string name="state_key">state Key></string>
+    <string name="state_cont_key">state conKey></string>
 </resources>
