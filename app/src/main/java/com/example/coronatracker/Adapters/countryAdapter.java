@@ -18,6 +18,7 @@ import com.example.coronatracker.R;
 import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,6 +26,10 @@ import java.util.List;
 public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold> {
     boolean expanded=false;
     List<Root> list;
+    public void update(List<Root> updatedRootList){
+        this.list=updatedRootList;
+        notifyDataSetChanged();
+    }
     public countryAdapter(List<Root> list) {
         this.list = list;
     }
@@ -86,6 +91,7 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
         criticalCases.setText(String.valueOf(data.critical));
         casesPerMillion.setText(String.valueOf(data.casesPerOneMillion));
         deathsPerMillion.setText(String.valueOf(data.deathsPerOneMillion));
+       if (data.countryInfo.flag!=null)
         Picasso.get().load(data.countryInfo.flag).noFade().resize(50, 22).into(countryFlag);
 
         box.setOnClickListener(new View.OnClickListener() {

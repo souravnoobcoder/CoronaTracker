@@ -1,7 +1,9 @@
-package com.example.coronatracker;
+package com.example.coronatracker.Activities;
 
-import static com.example.coronatracker.Fragments.BlankFragment.ARG_PARAM1;
+import static com.example.coronatracker.Fragments.countriesData.ARG_PARAM1;
 
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.transition.AutoTransition;
@@ -24,8 +26,9 @@ import com.example.coronatracker.Api.methods;
 import com.example.coronatracker.Api.newApi;
 import com.example.coronatracker.DataClasses.Root;
 import com.example.coronatracker.DataClasses.world;
-import com.example.coronatracker.Fragments.BlankFragment;
+import com.example.coronatracker.Fragments.countriesData;
 import com.example.coronatracker.Fragments.Launching;
+import com.example.coronatracker.R;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 
@@ -36,7 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener , android.widget.Toolbar.OnMenuItemClickListener {
     boolean expanded = false;
     AppBarLayout box;
     TextView totalPopulation, confirmed, recovered, deaths,
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayout moreDataLayout;
     FragmentContainerView startUp;
     private DrawerLayout drawer;
+    List<Root> rootList=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +91,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         method.getData().enqueue(new Callback<List<Root>>() {
             @Override
             public void onResponse(@NonNull Call<List<Root>> call, @NonNull Response<List<Root>> response) {
-               setFragment(response.body());
+                assert response.body() != null;
+                setFragment(response.body());
+                rootList.addAll(response.body());
             }
 
             @Override
@@ -95,6 +101,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(MainActivity.this, "Unable to load Data", Toast.LENGTH_SHORT).show();
             }
         });
+        toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) drawer.closeDrawer(GravityCompat.START);
+        else super.onBackPressed();
     }
 
     public void toolClick(View view) {
@@ -151,13 +164,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .addToBackStack("BACK_STACK")
-                .replace(R.id.recycle_fragment,BlankFragment.class,args)
+                .replace(R.id.recycle_fragment, countriesData.class,args)
                 .commit();
     }
     public void settingStart(){
         getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(R.id.recycle_fragment, Launching.class,null)
+                .setReorderingAllowed(false)
+                .replace(R.id.launching, Launching.class,null)
                 .commit();
     }
 
@@ -165,7 +178,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId=item.getItemId();
         if (itemId == R.id.search) {
-            makeToast("Searched");
+            Intent intent=new Intent(MainActivity.this,SearchHandle.class);
+            intent.putParcelableArrayListExtra(getString(R.string.intent_search), (ArrayList<? extends Parcelable>) rootList);
+            startActivity(intent);
         } else if (itemId == R.id.call) {
             makeToast("Call");
         } else if (itemId == R.id.india_states) {
@@ -180,5 +195,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     void makeToast(String message){
         Toast.makeText(MainActivity.this,message,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId()==R.id.search){
+
+        }
+        return false;
     }
 }
