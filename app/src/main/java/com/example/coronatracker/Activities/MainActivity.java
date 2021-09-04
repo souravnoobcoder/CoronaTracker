@@ -25,8 +25,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.coronatracker.Api.methods;
 import com.example.coronatracker.Api.newApi;
 import com.example.coronatracker.DataClasses.Root;
-import com.example.coronatracker.DataClasses.indianStates;
-import com.example.coronatracker.DataClasses.stateContacts;
+import com.example.coronatracker.DataClasses.indiaContactModel.stateContacts;
+import com.example.coronatracker.DataClasses.indiaModel.Regional;
+import com.example.coronatracker.DataClasses.indiaModel.indiaStates;
 import com.example.coronatracker.DataClasses.world;
 import com.example.coronatracker.Fragments.Launching;
 import com.example.coronatracker.Fragments.countriesData;
@@ -35,6 +36,7 @@ import com.example.coronatracker.R;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
-        , android.widget.Toolbar.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     boolean expanded = false;
     AppBarLayout box;
     TextView totalPopulation, confirmed, recovered, deaths,
@@ -51,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayout moreDataLayout;
     private DrawerLayout drawer;
     List<Root> rootList;
-    indianStates states;
-    stateContacts contacts;
+    List<Regional> states;
+    List<com.example.coronatracker.DataClasses.indiaContactModel.Regional> contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(MainActivity.this, "Unable to load Data", Toast.LENGTH_SHORT).show();
             }
         });
-        toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
     }
 
     @Override
@@ -214,48 +214,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        if (item.getItemId() == R.id.search) {
-            makeToast("go");
-        }
-        return false;
-    }
-
-    public void setStateFragment(indianStates states, stateContacts contacts) {
+    public void setStateFragment(List<Regional> states,
+            List<com.example.coronatracker.DataClasses.indiaContactModel.Regional> contacts) {
         Bundle args = new Bundle();
-        args.putSerializable(getString(state_key), states);
-        args.putSerializable(getString(state_cont_key), contacts);
+        args.putParcelableArrayList(getString(state_key), (ArrayList<? extends Parcelable>) states);
+        args.putParcelableArrayList(getString(state_cont_key), (ArrayList<? extends Parcelable>) contacts);
         getSupportFragmentManager().beginTransaction()
-                .addToBackStack("stack")
+                .addToBackStack("Stack")
                 .replace(R.id.recycle_fragment, indiaStateFragment.class, args)
                 .commit();
     }
 
     void startIndianState() {
         methods myMethod = newApi.getIndiaState().create(methods.class);
-        myMethod.getStates().enqueue(new Callback<indianStates>() {
-            @Override
-            public void onResponse(@NonNull Call<indianStates> call, @NonNull Response<indianStates> response) {
-                states = response.body();
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<indianStates> call, @NonNull Throwable t) {
-                makeToast("Failed to Get States");
-            }
-        });
         myMethod.getContacts().enqueue(new Callback<stateContacts>() {
             @Override
-            public void onResponse(@NonNull Call<stateContacts> call, @NonNull Response<stateContacts> response) {
-                contacts = response.body();
+            public void onResponse(Call<stateContacts> call, Response<stateContacts> response) {
+                assert response.body() != null;
+                contacts=response.body().data.contacts.regional;
             }
 
             @Override
-            public void onFailure(@NonNull Call<stateContacts> call, @NonNull Throwable t) {
+            public void onFailure(Call<stateContacts> call, Throwable t) {
                 makeToast("Failed to Get States Contacts");
             }
         });
-        setStateFragment(states, contacts);
+        myMethod.getStates().enqueue(new Callback<indiaStates>() {
+            @Override
+            public void onResponse(Call<indiaStates> call, Response<indiaStates> response) {
+                assert response.body() != null;
+                states=response.body().data.regional;
+                setStateFragment(states, contacts);
+            }
+
+            @Override
+            public void onFailure(Call<indiaStates> call, Throwable t) {
+                makeToast("Failed to Get States");
+            }
+        });
     }
 }

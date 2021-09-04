@@ -10,11 +10,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SortedList;
 
+import com.example.coronatracker.DataClasses.indiaModel.Regional;
 import com.example.coronatracker.DataClasses.indiaStateModel;
-import com.example.coronatracker.DataClasses.indianStates;
-import com.example.coronatracker.DataClasses.stateContacts;
 import com.example.coronatracker.R;
 import com.google.android.material.card.MaterialCardView;
 
@@ -23,6 +21,8 @@ import java.util.List;
 public class stateAdapter extends RecyclerView.Adapter<stateAdapter.viewHolder> {
     boolean expanded=false;
     List<indiaStateModel> stateModelList;
+    List<Regional> states;
+    List<com.example.coronatracker.DataClasses.indiaContactModel.Regional> contacts;
     public stateAdapter(List<indiaStateModel> stateModelList){
         this.stateModelList=stateModelList;
     }
@@ -46,10 +46,10 @@ public class stateAdapter extends RecyclerView.Adapter<stateAdapter.viewHolder> 
         TextView stateName=holder.stateName;
         TextView helplineNumber= holder.helplineNumber;
         TextView foreignConfirmed=holder.foreignConfirmed;
+        TextView activeCases= holder.activeCases;
         TextView viewMore=holder.viewMore;
         LinearLayout moreDataLayout= holder.moreDataLayout;
         MaterialCardView box = holder.box;
-
 
         stateName.setText(model.getLoc());
         helplineNumber.setText(model.getNumber());
@@ -57,6 +57,7 @@ public class stateAdapter extends RecyclerView.Adapter<stateAdapter.viewHolder> 
         recovered.setText(String.valueOf(model.getDischarged()));
         deaths.setText(String.valueOf(model.getDeaths()));
         foreignConfirmed.setText(String.valueOf(model.getConfirmedCasesForeign()));
+        activeCases.setText(String.valueOf(model.getActiveCases()));
 
         box.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,12 +12,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.coronatracker.Activities.MainActivity;
 import com.example.coronatracker.Adapters.stateAdapter;
-import com.example.coronatracker.DataClasses.indiaModel.Data;
-import com.example.coronatracker.DataClasses.indiaModel.indiaS;
+import com.example.coronatracker.DataClasses.indiaModel.Regional;
 import com.example.coronatracker.DataClasses.indiaStateModel;
-import com.example.coronatracker.DataClasses.indianStates;
-import com.example.coronatracker.DataClasses.stateContacts;
 import com.example.coronatracker.R;
 
 import java.util.ArrayList;
@@ -24,11 +23,10 @@ import java.util.List;
 
 public class indiaStateFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    static indianStates states;
-    static stateContacts contacts;
+    List<Regional> states=new ArrayList<>();
+    List<com.example.coronatracker.DataClasses.indiaContactModel.Regional>
+            contacts=new ArrayList<>();
     stateAdapter adapter;
-
 
     public indiaStateFragment() {
         // Required empty public constructor
@@ -39,10 +37,9 @@ public class indiaStateFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            states = (indianStates) getArguments().getSerializable(getString(R.string.state_key));
-            contacts = (stateContacts) getArguments().getSerializable(getString(R.string.state_cont_key));
+            states = getArguments().getParcelableArrayList(getString(R.string.state_key));
+            contacts = getArguments().getParcelableArrayList(getString(R.string.state_cont_key));
         }
-        adapter = new stateAdapter(createData(states,contacts));
     }
 
     @Override
@@ -54,27 +51,37 @@ public class indiaStateFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = requireView().findViewById(R.id.stateRecycle);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
+        new Thread(() -> {
+            RecyclerView recyclerView = requireView().findViewById(R.id.stateRecycle);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            adapter=new stateAdapter(createData());
+            recyclerView.setAdapter(adapter);
+        }).start();
     }
 
-    private List<indiaStateModel> createData(indianStates states, stateContacts contacts) {
+    private List<indiaStateModel> createData() {
         List<indiaStateModel> model = new ArrayList<>();
-        for (int i = 0; i < states.data.regional.size(); i++) {
-            for (int j = 0; j < contacts.data.contacts.regional.size(); i++) {
-                String stateNameI = states.data.regional.get(i).loc.toLowerCase();
-                String stateNameJ = contacts.data.contacts.regional.get(j).loc.toLowerCase();
-                if (stateNameI.equals(stateNameJ)) {
-                    int confirmedCasesForeign=states.data.regional.get(i).confirmedCasesForeign;
-                    int discharged=states.data.regional.get(i).discharged;
-                    int deaths=states.data.regional.get(i).deaths;
-                    int totalConfirmed=states.data.regional.get(i).totalConfirmed;
-                    String number=contacts.data.contacts.regional.get(j).number;
-                    model.add(new indiaStateModel(stateNameI,confirmedCasesForeign,discharged,deaths,totalConfirmed,number));
+
+            for(int i = 0; i < states.size(); i++) {
+                Regional state = states.get(i);
+                for (int j = 0; j < contacts.size(); j++) {
+                    com.example.coronatracker.DataClasses.indiaContactModel.Regional
+                            contact = contacts.get(j);
+                    String stateNameI = state.loc.toLowerCase();
+                    String stateNameJ = contact.loc.toLowerCase();
+                    if (stateNameI.equals(stateNameJ)) {
+                        contacts.remove(contact);
+                        int confirmedCasesForeign = state.confirmedCasesForeign;
+                        int discharged = state.discharged;
+                        int deaths = state.deaths;
+                        int totalConfirmed = state.totalConfirmed;
+                        String number = contact.number;
+                        int active=totalConfirmed-(deaths+discharged);
+                        model.add(new indiaStateModel(stateNameI, confirmedCasesForeign, discharged, deaths,
+                                totalConfirmed, number,active));
+                    }
                 }
             }
-        }
         return model;
     }
 }

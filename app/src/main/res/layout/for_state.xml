@@ -120,14 +120,14 @@
                 android:layout_below="@+id/recoveredCountLayout" />
 
             <LinearLayout
+                android:id="@+id/moreDataLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/recoveredCountLayout"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:id="@+id/moreDataLayout"
-
                 android:orientation="vertical"
-                android:layout_below="@id/recoveredCountLayout">
+                android:layout_marginEnd="10dp"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -139,21 +139,21 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
                         android:layout_marginStart="5dp"
-                        android:gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
                         android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/indianCitizen_expandedCard"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="00"
-                            android:textStyle="bold"
-                            android:textSize="20sp"
                             android:textColor="@color/purple_500"
-                            android:id="@+id/indianCitizen_expandedCard" />
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -166,21 +166,21 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
                         android:layout_marginStart="5dp"
-                        android:gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
                         android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/foreigner_expandedCard"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="00"
-                            android:textStyle="bold"
-                            android:textSize="20sp"
                             android:textColor="@color/purple_200"
-                            android:id="@+id/foreigner_expandedCard" />
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -195,24 +195,24 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_marginStart="5dp"
-                    android:gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="5dp"
+                    android:gravity="center_horizontal"
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/helpline_expandedCard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="00154545454"
-                        android:textStyle="bold"
-                        android:textSize="22sp"
+                        android:autoLink="phone"
                         android:drawableStart="@drawable/ic_local_phone_black_24dp"
                         android:drawablePadding="6dp"
-                        android:autoLink="phone"
-                        android:textColorLink="@color/teal_200"
+                        android:text="00154545454"
                         android:textColor="#00FF00"
-                        android:id="@+id/helpline_expandedCard" />
+                        android:textColorLink="@color/teal_200"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"

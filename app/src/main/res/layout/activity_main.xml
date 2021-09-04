@@ -7,6 +7,7 @@
     tools:appDrawers="start"
     tools:context=".Activities.MainActivity"
     android:id="@+id/drawer_Layout"
+    android:theme="@style/Theme.CoronaTracker"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 

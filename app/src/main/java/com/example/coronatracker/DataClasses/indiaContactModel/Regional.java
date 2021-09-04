@@ -1,23 +1,15 @@
-package com.example.coronatracker.DataClasses.indiaModel;
+package com.example.coronatracker.DataClasses.indiaContactModel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Regional implements Parcelable {
     public String loc;
-    public int confirmedCasesIndian;
-    public int confirmedCasesForeign;
-    public int discharged;
-    public int deaths;
-    public int totalConfirmed;
+    public String number;
 
     protected Regional(Parcel in) {
         loc = in.readString();
-        confirmedCasesIndian = in.readInt();
-        confirmedCasesForeign = in.readInt();
-        discharged = in.readInt();
-        deaths = in.readInt();
-        totalConfirmed = in.readInt();
+        number = in.readString();
     }
 
     public static final Creator<Regional> CREATOR = new Creator<Regional>() {
@@ -40,10 +32,6 @@ public class Regional implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(loc);
-        dest.writeInt(confirmedCasesIndian);
-        dest.writeInt(confirmedCasesForeign);
-        dest.writeInt(discharged);
-        dest.writeInt(deaths);
-        dest.writeInt(totalConfirmed);
+        dest.writeString(number);
     }
 }
