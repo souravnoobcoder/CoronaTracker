@@ -3,6 +3,7 @@ package com.example.coronatracker.Activities;
 import static com.example.coronatracker.Fragments.countriesData.ARG_PARAM1;
 import static com.example.coronatracker.R.string.*;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onFailure(@NonNull Call<List<Root>> call, @NonNull Throwable t) {
-                Toast.makeText(MainActivity.this, "Unable to load Data", Toast.LENGTH_SHORT).show();
+               makeToast("Unable to load Data");
             }
         });
     }
@@ -201,17 +202,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     void makeToast(String message){
         Toast.makeText(MainActivity.this,message,Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void setStateFragment(List<Regional> states,

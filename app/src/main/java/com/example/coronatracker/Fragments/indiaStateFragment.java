@@ -23,9 +23,8 @@ import java.util.List;
 
 public class indiaStateFragment extends Fragment {
 
-    List<Regional> states=new ArrayList<>();
-    List<com.example.coronatracker.DataClasses.indiaContactModel.Regional>
-            contacts=new ArrayList<>();
+    List<Regional> states;
+    List<com.example.coronatracker.DataClasses.indiaContactModel.Regional> contacts;
     stateAdapter adapter;
 
     public indiaStateFragment() {
@@ -36,6 +35,8 @@ public class indiaStateFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        states=new ArrayList<>();
+        contacts=new ArrayList<>();
         if (getArguments() != null) {
             states = getArguments().getParcelableArrayList(getString(R.string.state_key));
             contacts = getArguments().getParcelableArrayList(getString(R.string.state_cont_key));
@@ -51,12 +52,10 @@ public class indiaStateFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        new Thread(() -> {
             RecyclerView recyclerView = requireView().findViewById(R.id.stateRecycle);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             adapter=new stateAdapter(createData());
             recyclerView.setAdapter(adapter);
-        }).start();
     }
 
     private List<indiaStateModel> createData() {
