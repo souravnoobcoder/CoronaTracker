@@ -75,7 +75,7 @@ public class stateAdapter extends RecyclerView.Adapter<stateAdapter.viewHolder> 
 
     @Override
     public int getItemCount() {
-        return stateModelList.size();
+        return stateModelList==null ? 0 :stateModelList.size();
     }
 
     public class viewHolder extends RecyclerView.ViewHolder {

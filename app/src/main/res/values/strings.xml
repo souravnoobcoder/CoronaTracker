@@ -14,4 +14,8 @@
     <string name="intent_search">key</string>
     <string name="state_key">state Key></string>
     <string name="state_cont_key">state conKey></string>
+    <string name="title_activity_kotlin">kotlin</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

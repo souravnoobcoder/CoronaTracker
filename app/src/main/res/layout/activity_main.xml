@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/recycle_fragment"
             android:layout_width="match_parent"
@@ -36,7 +37,6 @@
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/worldfinal"
                 app:contentScrim="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -63,4 +63,13 @@
         android:id="@+id/nav_view"
         android:layout_gravity="start"
         app:menu="@menu/navigation_menu"/>
+
+<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--        android:id="@+id/bottom_navigation_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginBottom="0dp"-->
+<!--        app:menu="@menu/main_bottom" />-->
+
 </androidx.drawerlayout.widget.DrawerLayout>

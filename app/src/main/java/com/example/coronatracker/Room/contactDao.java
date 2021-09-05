@@ -17,4 +17,7 @@ public interface contactDao {
 
     @Query("DELETE FROM OFFLINECONTACTS")
     void deleteAll();
+
+    @Query("SELECT * FROM OFFLINECONTACTS")
+    List<indiaStateModel> getOfflineDataB();
 }

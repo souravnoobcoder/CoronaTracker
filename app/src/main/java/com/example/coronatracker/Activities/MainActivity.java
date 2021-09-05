@@ -1,7 +1,9 @@
 package com.example.coronatracker.Activities;
 
+import static com.example.coronatracker.DataClasses.values.COUNTRY_INTENT;
+import static com.example.coronatracker.DataClasses.values.COUNTRY_VAL;
+import static com.example.coronatracker.DataClasses.values.STATE_INTENT_VALUE;
 import static com.example.coronatracker.Fragments.countriesData.ARG_PARAM1;
-import static com.example.coronatracker.R.string.intent_search;
 import static com.example.coronatracker.R.string.navigation_drawer_close;
 import static com.example.coronatracker.R.string.navigation_drawer_open;
 import static com.example.coronatracker.R.string.state_cont_key;
@@ -13,7 +15,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
-import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -27,6 +29,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.coronatracker.Api.methods;
 import com.example.coronatracker.Api.newApi;
@@ -39,21 +43,24 @@ import com.example.coronatracker.Fragments.Launching;
 import com.example.coronatracker.Fragments.countriesData;
 import com.example.coronatracker.Fragments.indiaStateFragment;
 import com.example.coronatracker.R;
+import com.example.coronatracker.Room.database;
+import com.example.coronatracker.Room.indiaStateModel;
+import com.example.coronatracker.Room.viewModel;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+        , Toolbar.OnMenuItemClickListener {
     public static final String TAGO = "hello sir";
     boolean expanded = false;
-    AppBarLayout box;
+    AppBarLayout box;List<indiaStateModel> model;
     TextView totalPopulation, confirmed, recovered, deaths,
             casesToday, activeCases, deathsToday, criticalCases, casesPerMillion, deathsPerMillion, viewMore;
     LinearLayout moreDataLayout;
@@ -71,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.showOverflowMenu();
 
         drawer = findViewById(R.id.drawer_Layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -110,9 +118,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onFailure(@NonNull Call<List<Root>> call, @NonNull Throwable t) {
-               makeToast("Unable to load Data");
+                makeToast("Unable to load Data");
             }
         });
+        toolbar.setOnMenuItemClickListener(this);
     }
 
     @Override
@@ -191,11 +200,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (itemId == R.id.search) {
             Intent intent = new Intent(MainActivity.this, SearchHandle.class);
             Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(getString(intent_search), (ArrayList<? extends Parcelable>) rootList);
+            bundle.putParcelableArrayList(COUNTRY_VAL, (ArrayList<? extends Parcelable>) rootList);
+            intent.putExtra(COUNTRY_INTENT, "country");
             intent.putExtras(bundle);
             startActivity(intent);
         } else if (itemId == R.id.call) {
-            makeToast("Call");
+            startStateSearch();
         } else if (itemId == R.id.india_states) {
 
                 startIndianState();
@@ -258,5 +268,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentManager manager = getSupportFragmentManager();
         return manager.findFragmentByTag(TAGO).isVisible()
                 || manager.findFragmentByTag(TAGO).isStateSaved();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.search_bar_option) {
+            Intent intent = new Intent(MainActivity.this, SearchHandle.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(COUNTRY_VAL, (ArrayList<? extends Parcelable>) rootList);
+            intent.putExtras(bundle);
+            intent.putExtra(COUNTRY_INTENT, "country");
+            startActivity(intent);
+        }
+        return true;
+    }
+
+    void startStateSearch() {
+        Intent intent = new Intent(MainActivity.this, SearchHandle.class);
+        Bundle bundle = new Bundle();
+       new Thread(new Runnable() {
+           @Override
+           public void run() {
+               model=database.getDbINSTANCE(MainActivity.this).contactDao().getOfflineDataB();
+           }
+       }).start();
+    try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        bundle.putParcelableArrayList(STATE_INTENT_VALUE, (ArrayList<? extends Parcelable>)model);
+
+        intent.putExtras(bundle);
+        intent.putExtra(COUNTRY_INTENT, "state");
+        startActivity(intent);
     }
 }

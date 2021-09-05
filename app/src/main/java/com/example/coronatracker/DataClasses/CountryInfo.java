@@ -11,8 +11,6 @@ public class CountryInfo implements Parcelable {
         public double longs;
         public String flag;
 
-        public CountryInfo() {
-        }
 
         protected CountryInfo(Parcel in) {
                 _id = in.readInt();

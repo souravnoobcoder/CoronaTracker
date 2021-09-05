@@ -1,10 +1,14 @@
 package com.example.coronatracker.Room;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "offlineContacts", primaryKeys = {})
-public class indiaStateModel {
+public class indiaStateModel implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private int key;
     private final String loc;
@@ -25,6 +29,29 @@ public class indiaStateModel {
         this.number = number;
         this.activeCases = activeCases;
     }
+    @Ignore
+    protected indiaStateModel(Parcel in) {
+        key = in.readInt();
+        loc = in.readString();
+        confirmedCasesForeign = in.readInt();
+        discharged = in.readInt();
+        deaths = in.readInt();
+        totalConfirmed = in.readInt();
+        number = in.readString();
+        activeCases = in.readInt();
+    }
+    @Ignore
+    public static final Creator<indiaStateModel> CREATOR = new Creator<indiaStateModel>() {
+        @Override
+        public indiaStateModel createFromParcel(Parcel in) {
+            return new indiaStateModel(in);
+        }
+
+        @Override
+        public indiaStateModel[] newArray(int size) {
+            return new indiaStateModel[size];
+        }
+    };
 
     public String getLoc() {
         return loc;
@@ -60,5 +87,22 @@ public class indiaStateModel {
 
     public void setKey(int key) {
         this.key = key;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    @Ignore
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(key);
+        dest.writeString(loc);
+        dest.writeInt(confirmedCasesForeign);
+        dest.writeInt(discharged);
+        dest.writeInt(deaths);
+        dest.writeInt(totalConfirmed);
+        dest.writeString(number);
+        dest.writeInt(activeCases);
     }
 }

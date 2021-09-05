@@ -12,7 +12,7 @@
             android:icon="@drawable/search"
             android:title="Search" />
         <item android:id="@+id/call"
-            android:title="Call"
+            android:title="State Search"
             android:icon="@drawable/ic_local_phone_black_24dp" />
     </group>
     <item
