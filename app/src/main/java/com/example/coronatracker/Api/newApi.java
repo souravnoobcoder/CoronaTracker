@@ -1,8 +1,6 @@
 package com.example.coronatracker.Api;
 
-import android.accessibilityservice.AccessibilityService;
-import android.content.Context;
-import android.net.ConnectivityManager;
+import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,14 +90,21 @@ public class newApi {
             }
         };
     }
+    public static final String BASE_COUNTRY_URL = "https://corona.lmao.ninja/v3/";
+    public static final String WORLD_URL = "https://corona.lmao.ninja/v2/";
+    private static Retrofit COVID_API_INSTANCE;
+    private static Retrofit WORLD;
+    private static Retrofit INDIA_STATE;
+
     /**
      * This interceptor will be called ONLY if the network is available
      * @return
      */
     private static Interceptor networkInterceptor() {
         return new Interceptor() {
+            @NonNull
             @Override
-            public Response intercept(Chain chain) throws IOException {
+            public Response intercept(@NonNull Chain chain) throws IOException {
                 System.out.println("network interceptor: called.");
 
                 Response response = chain.proceed(chain.request());
@@ -116,6 +121,7 @@ public class newApi {
             }
         };
     }
+
     private static HttpLoggingInterceptor httpLoggingInterceptor ()
     {
         HttpLoggingInterceptor httpLoggingInterceptor =
@@ -124,24 +130,18 @@ public class newApi {
                     @Override
                     public void log (String message)
                     {
-                        System.out.println("log: http log: " + message);
+
                     }
                 } );
         httpLoggingInterceptor.setLevel( HttpLoggingInterceptor.Level.BODY);
         return httpLoggingInterceptor;
     }
-    private static Retrofit COVID_API_INSTANCE;
-    private static Retrofit WORLD;
-    private static Retrofit INDIA_STATE;
-
-    public static final String BASE_URL="https://corona.lmao.ninja/v3/";
-    public static final String WORLD_URL="https://corona.lmao.ninja/v2/";
     public static final String STATE_URL="https://api.rootnet.in/";
 
     public static Retrofit getApiInstance(){
         if (COVID_API_INSTANCE==null){
-            COVID_API_INSTANCE=new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+            COVID_API_INSTANCE= new Retrofit.Builder()
+                    .baseUrl(BASE_COUNTRY_URL)
                     .client(okHttpClientCountries())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();

@@ -11,9 +11,9 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-if (instance==null){
-    instance = this;
-}
+    if (instance == null) {
+        instance = this;
+    }
     }
 
     public static Context getInstance(){

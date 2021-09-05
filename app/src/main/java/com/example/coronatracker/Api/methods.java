@@ -1,7 +1,6 @@
 package com.example.coronatracker.Api;
 
 import com.example.coronatracker.DataClasses.Root;
-
 import com.example.coronatracker.DataClasses.indiaContactModel.stateContacts;
 import com.example.coronatracker.DataClasses.indiaModel.indiaStates;
 import com.example.coronatracker.DataClasses.world;

@@ -24,7 +24,7 @@
             android:paddingBottom="8dp">
 
             <TextView
-                android:id="@+id/locationNameTextView"
+                android:id="@+id/locationNameText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -52,7 +52,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/confirmedCaseTextView"
+                    android:id="@+id/confirmedCaseText"
                     android:text="000"
                     android:textSize="20sp"
                     android:textColor="@color/teal_700"
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_below="@id/locationNameTextView"
+                android:layout_below="@id/locationNameText"
                 android:layout_marginStart="10dp"
                 android:layout_alignBottom="@id/deathCasesLayout"
                 android:gravity="bottom"
@@ -78,7 +78,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/recoveredTextView"
+                    android:id="@+id/recoveredText"
                     android:text="00"
                     android:textStyle="bold"
                     android:textSize="20sp"
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:orientation="vertical"
-                android:layout_below="@id/locationNameTextView"
+                android:layout_below="@id/locationNameText"
                 android:layout_marginEnd="10dp"
                 android:layout_alignStart="@id/confirmedCasesLayout"
                 android:layout_marginTop="15dp"
@@ -105,7 +105,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/deathsTextView"
+                    android:id="@+id/deathsText"
                     android:text="000"
                     android:textColor="#000"
                     android:textSize="20sp" />
@@ -116,11 +116,11 @@
                 android:layout_height="wrap_content"
                 android:text="View more"
                 android:textAlignment="center"
-                android:id="@+id/viewMoreText"
+                android:id="@+id/viewMore"
                 android:layout_below="@+id/recoveredCountLayout" />
 
             <LinearLayout
-                android:id="@+id/moreDataLayout"
+                android:id="@+id/moreDataLay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/recoveredCountLayout"

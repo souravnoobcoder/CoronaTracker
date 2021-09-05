@@ -1,6 +1,12 @@
-package com.example.coronatracker.DataClasses;
+package com.example.coronatracker.Room;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "offlineContacts", primaryKeys = {})
 public class indiaStateModel {
+    @PrimaryKey(autoGenerate = true)
+    private int key;
     private final String loc;
     private final int confirmedCasesForeign;
     private final int discharged;
@@ -46,5 +52,13 @@ public class indiaStateModel {
 
     public int getActiveCases() {
         return activeCases;
+    }
+
+    public int getKey() {
+        return this.key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.coronatracker.Adapters;
 
 
+import android.os.Handler;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
@@ -13,12 +14,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.coronatracker.DataClasses.CountryInfo;
 import com.example.coronatracker.DataClasses.Root;
 import com.example.coronatracker.R;
 import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -91,25 +92,24 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
         criticalCases.setText(String.valueOf(data.critical));
         casesPerMillion.setText(String.valueOf(data.casesPerOneMillion));
         deathsPerMillion.setText(String.valueOf(data.deathsPerOneMillion));
-//        Picasso.get().load(data.countryInfo.flag).noFade().resize(50, 22).into(countryFlag);
+        CountryInfo info= data.countryInfo;
+        Picasso.get().load(info.flag).noFade().resize(50, 22).into(countryFlag);
 
-        box.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        new Handler().post(() -> box.setOnClickListener(v -> {
 
-                if (expanded) {
-                    TransitionManager.beginDelayedTransition(box, new AutoTransition());
-                    moreDataLayout.setVisibility(View.GONE);
-                    viewMore.setVisibility(View.VISIBLE);
-                    expanded = false;
-                } else {
-                    TransitionManager.beginDelayedTransition(box, new AutoTransition());
-                    viewMore.setVisibility(View.GONE);
-                    moreDataLayout.setVisibility(View.VISIBLE);
-                    expanded = true;
-                }
+            if (expanded) {
+                TransitionManager.beginDelayedTransition(box, new AutoTransition());
+                moreDataLayout.setVisibility(View.GONE);
+                viewMore.setVisibility(View.VISIBLE);
+                expanded = false;
+            } else {
+                TransitionManager.beginDelayedTransition(box, new AutoTransition());
+                viewMore.setVisibility(View.GONE);
+                moreDataLayout.setVisibility(View.VISIBLE);
+                expanded = true;
             }
-        });
+        }));
+
     }
 
     @Override
