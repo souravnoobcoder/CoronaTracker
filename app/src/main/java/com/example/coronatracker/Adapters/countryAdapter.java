@@ -7,6 +7,8 @@ import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +29,8 @@ import java.util.List;
 public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold> {
     boolean expanded=false;
     List<Root> list;
+    private static int lastPosition=-1;
+
     public void update(List<Root> updatedRootList){
         this.list=updatedRootList;
         notifyDataSetChanged();
@@ -141,6 +145,15 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
             moreDataLayout=itemView.findViewById(R.id.moreDataLayout);
             box = itemView.findViewById(R.id.globalDataCard);
             countryFlag = itemView.findViewById(R.id.country_flag);
+        }
+    }
+    public static void setFadeAnimation(View view,int position){
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition)
+        {
+            Animation animation = AnimationUtils.loadAnimation(view.getContext(), android.R.anim.slide_in_left);
+            view.startAnimation(animation);
+            lastPosition = position;
         }
     }
 }

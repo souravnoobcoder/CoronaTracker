@@ -89,6 +89,7 @@ public class indiaStateModel implements Parcelable {
         this.key = key;
     }
 
+    @Ignore
     @Override
     public int describeContents() {
         return 0;

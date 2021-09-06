@@ -18,7 +18,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
+<com.google.android.material.bottomnavigation.BottomNavigationView
+    android:id="@+id/bottom_navigation_view"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:background="@color/teal_200"
+    android:backgroundTint="@color/teal_700"
+    android:layout_gravity="bottom"
+    app:menu="@menu/main_bottom"/>
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/recycle_fragment"
             android:layout_width="match_parent"
@@ -64,12 +71,5 @@
         android:layout_gravity="start"
         app:menu="@menu/navigation_menu"/>
 
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:id="@+id/bottom_navigation_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="100dp"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_marginBottom="0dp"-->
-<!--        app:menu="@menu/main_bottom" />-->
 
 </androidx.drawerlayout.widget.DrawerLayout>

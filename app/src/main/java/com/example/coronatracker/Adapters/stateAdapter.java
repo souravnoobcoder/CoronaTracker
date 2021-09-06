@@ -1,11 +1,14 @@
 package com.example.coronatracker.Adapters;
 
+
 import android.os.Handler;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,6 +23,7 @@ import java.util.List;
 
 public class stateAdapter extends RecyclerView.Adapter<stateAdapter.viewHolder> {
     boolean expanded=false;
+    private static int lastPosition=-1;
     List<indiaStateModel> stateModelList;
     public stateAdapter(List<indiaStateModel> stateModelList){
         this.stateModelList=stateModelList;
@@ -95,6 +99,15 @@ public class stateAdapter extends RecyclerView.Adapter<stateAdapter.viewHolder> 
             moreDataLayout = itemView.findViewById(R.id.moreDataLay);
             box = itemView.findViewById(R.id.stateDataCard);
             viewMore = itemView.findViewById(R.id.viewMore);
+        }
+    }
+    public static void setFadeAnimation(View view,int position){
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition)
+        {
+            Animation animation = AnimationUtils.loadAnimation(view.getContext(), android.R.anim.slide_in_left);
+            view.startAnimation(animation);
+            lastPosition = position;
         }
     }
 }

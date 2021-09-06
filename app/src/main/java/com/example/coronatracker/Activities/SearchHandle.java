@@ -2,7 +2,6 @@ package com.example.coronatracker.Activities;
 
 import static com.example.coronatracker.DataClasses.values.COUNTRY_INTENT;
 import static com.example.coronatracker.DataClasses.values.COUNTRY_VAL;
-import static com.example.coronatracker.DataClasses.values.STATE_INTENT_VALUE;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,6 +15,7 @@ import com.example.coronatracker.Adapters.countryAdapter;
 import com.example.coronatracker.Adapters.stateAdapter;
 import com.example.coronatracker.DataClasses.Root;
 import com.example.coronatracker.R;
+import com.example.coronatracker.Room.database;
 import com.example.coronatracker.Room.indiaStateModel;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchHandle extends AppCompatActivity {
-    private static final String STATE_KEY = "GO";
     TextInputEditText inputEditText;
     String know;
     private List<Root> fullSearchingList;
@@ -44,17 +43,16 @@ public class SearchHandle extends AppCompatActivity {
 
         know=getIntent().getStringExtra(COUNTRY_INTENT);
         if (know.equals("country")){
+            inputEditText.setHint("Enter Country");
             adapter=new countryAdapter(null);
             fullSearchingList = getIntent().getExtras().getParcelableArrayList(COUNTRY_VAL);
             recyclerView.setAdapter(adapter);
         }else {
-            adapterS=new stateAdapter(null);
-            fullSearchingListState=getIntent().getExtras().getParcelableArrayList(STATE_INTENT_VALUE);
+            inputEditText.setHint("Enter state");
+            adapterS = new stateAdapter(null);
             recyclerView.setAdapter(adapterS);
+            setStateList();
         }
-
-
-
     }
 
     @Override
@@ -106,5 +104,20 @@ public class SearchHandle extends AppCompatActivity {
 //                sortedList.add(unSort);
 //        }
         return sortedList;
+    }
+
+    void setStateList() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                fullSearchingListState = database.getDbINSTANCE(getApplicationContext()).contactDao().getOfflineDataB();
+
+            }
+        }).start();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

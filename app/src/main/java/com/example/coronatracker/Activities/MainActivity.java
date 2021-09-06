@@ -2,7 +2,6 @@ package com.example.coronatracker.Activities;
 
 import static com.example.coronatracker.DataClasses.values.COUNTRY_INTENT;
 import static com.example.coronatracker.DataClasses.values.COUNTRY_VAL;
-import static com.example.coronatracker.DataClasses.values.STATE_INTENT_VALUE;
 import static com.example.coronatracker.Fragments.countriesData.ARG_PARAM1;
 import static com.example.coronatracker.R.string.navigation_drawer_close;
 import static com.example.coronatracker.R.string.navigation_drawer_open;
@@ -12,6 +11,7 @@ import static com.example.coronatracker.R.string.state_key;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
@@ -29,8 +29,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.coronatracker.Api.methods;
 import com.example.coronatracker.Api.newApi;
@@ -43,10 +41,9 @@ import com.example.coronatracker.Fragments.Launching;
 import com.example.coronatracker.Fragments.countriesData;
 import com.example.coronatracker.Fragments.indiaStateFragment;
 import com.example.coronatracker.R;
-import com.example.coronatracker.Room.database;
 import com.example.coronatracker.Room.indiaStateModel;
-import com.example.coronatracker.Room.viewModel;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -59,8 +56,8 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
         , Toolbar.OnMenuItemClickListener {
     public static final String TAGO = "hello sir";
-    boolean expanded = false;
-    AppBarLayout box;List<indiaStateModel> model;
+    boolean expanded = false, pressedOnce =false,country=true;
+    AppBarLayout box;
     TextView totalPopulation, confirmed, recovered, deaths,
             casesToday, activeCases, deathsToday, criticalCases, casesPerMillion, deathsPerMillion, viewMore;
     LinearLayout moreDataLayout;
@@ -68,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     List<Root> rootList;
     List<Regional> states;
     List<com.example.coronatracker.DataClasses.indiaContactModel.Regional> contacts;
-
+    BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,27 +104,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-        methods method = newApi.getApiInstance().create(methods.class);
-        method.getData().enqueue(new Callback<List<Root>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Root>> call, @NonNull Response<List<Root>> response) {
-                assert response.body() != null;
-                setFragment(response.body());
-                rootList = response.body();
-            }
+        setCountries();
 
-            @Override
-            public void onFailure(@NonNull Call<List<Root>> call, @NonNull Throwable t) {
-                makeToast("Unable to load Data");
-            }
-        });
         toolbar.setOnMenuItemClickListener(this);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.india_info) {
+                country=false;
+                startIndianState();
+            }
+             else if (itemId == R.id.world_info) {
+                 country=true;
+                setCountries();
+            }
+            return true;
+        });
     }
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) drawer.closeDrawer(GravityCompat.START);
-        else super.onBackPressed();
+
+        if (drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+            return;
+        }
+
+        else if (pressedOnce){
+            super.onBackPressed();
+            return;
+        }
+        this.pressedOnce =true;
+        makeToast("Double Click for Exit");
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    pressedOnce =false;
+                }
+            },2000);
+
     }
 
     public void toolClick(View view) {
@@ -177,12 +191,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         criticalCases = findViewById(R.id.criticalCases_expandedCard);
         casesPerMillion = findViewById(R.id.casesPerMillion_expandedCard);
         deathsPerMillion = findViewById(R.id.deathsPerMillion_expandedCard);
+        bottomNavigationView=findViewById(R.id.bottom_navigation_view);
     }
 
     void setFragment(List<Root> root) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_PARAM1, (ArrayList<? extends Parcelable>) root);
         getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide,R.anim.slide)
                 .replace(R.id.recycle_fragment, countriesData.class, args)
                 .commit();
     }
@@ -207,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.call) {
             startStateSearch();
         } else if (itemId == R.id.india_states) {
-
                 startIndianState();
         } else if (itemId == R.id.safety) {
             makeToast("Safety");
@@ -227,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         args.putParcelableArrayList(getString(state_key), (ArrayList<? extends Parcelable>) states);
         args.putParcelableArrayList(getString(state_cont_key), (ArrayList<? extends Parcelable>) contacts);
         getSupportFragmentManager().beginTransaction()
-                .addToBackStack(TAGO)
+                .setCustomAnimations(R.anim.slide,R.anim.slide)
                 .replace(R.id.recycle_fragment, indiaStateFragment.class, args)
                 .commit();
     }
@@ -260,14 +275,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 makeToast("Failed to Get States");
             }
         });
-
-
     }
+    void setCountries(){
+        methods method = newApi.getApiInstance().create(methods.class);
+        method.getData().enqueue(new Callback<List<Root>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Root>> call, @NonNull Response<List<Root>> response) {
+                assert response.body() != null;
+                setFragment(response.body());
+                rootList = response.body();
+            }
 
-    private boolean checkingFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        return manager.findFragmentByTag(TAGO).isVisible()
-                || manager.findFragmentByTag(TAGO).isStateSaved();
+            @Override
+            public void onFailure(@NonNull Call<List<Root>> call, @NonNull Throwable t) {
+                makeToast("Unable to load Data");
+            }
+        });
     }
 
     @Override
@@ -279,34 +302,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.search_bar_option) {
-            Intent intent = new Intent(MainActivity.this, SearchHandle.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(COUNTRY_VAL, (ArrayList<? extends Parcelable>) rootList);
-            intent.putExtras(bundle);
-            intent.putExtra(COUNTRY_INTENT, "country");
-            startActivity(intent);
+            if (country)
+            startCountrySearch();
+            else startStateSearch();
         }
         return true;
     }
 
     void startStateSearch() {
         Intent intent = new Intent(MainActivity.this, SearchHandle.class);
-        Bundle bundle = new Bundle();
-       new Thread(new Runnable() {
-           @Override
-           public void run() {
-               model=database.getDbINSTANCE(MainActivity.this).contactDao().getOfflineDataB();
-           }
-       }).start();
-    try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        bundle.putParcelableArrayList(STATE_INTENT_VALUE, (ArrayList<? extends Parcelable>)model);
-
-        intent.putExtras(bundle);
         intent.putExtra(COUNTRY_INTENT, "state");
         startActivity(intent);
     }
+    void startCountrySearch(){
+        Intent intent = new Intent(MainActivity.this, SearchHandle.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(COUNTRY_VAL, (ArrayList<? extends Parcelable>) rootList);
+        intent.putExtras(bundle);
+        intent.putExtra(COUNTRY_INTENT, "country");
+        startActivity(intent);
+    }
+
 }
