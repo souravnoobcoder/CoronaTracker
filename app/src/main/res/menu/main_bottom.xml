@@ -9,5 +9,7 @@
         android:icon="@drawable/world"/>
     <item
         android:title="India"
+        app:showAsAction="always"
+        android:icon="@drawable/india_dr"
         android:id="@+id/india_info"/>
 </menu>

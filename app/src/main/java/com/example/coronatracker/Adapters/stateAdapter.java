@@ -74,7 +74,7 @@ public class stateAdapter extends RecyclerView.Adapter<stateAdapter.viewHolder> 
                 expanded = true;
             }
         }));
-
+        setLeftAnimation(holder.itemView,position);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class stateAdapter extends RecyclerView.Adapter<stateAdapter.viewHolder> 
             viewMore = itemView.findViewById(R.id.viewMore);
         }
     }
-    public static void setFadeAnimation(View view,int position){
+    public static void setLeftAnimation(View view,int position){
         // If the bound view wasn't previously displayed on screen, it's animated
         if (position > lastPosition)
         {

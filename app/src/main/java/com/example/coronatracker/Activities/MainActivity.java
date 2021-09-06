@@ -28,7 +28,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.coronatracker.Api.methods;
 import com.example.coronatracker.Api.newApi;
@@ -41,7 +40,6 @@ import com.example.coronatracker.Fragments.Launching;
 import com.example.coronatracker.Fragments.countriesData;
 import com.example.coronatracker.Fragments.indiaStateFragment;
 import com.example.coronatracker.R;
-import com.example.coronatracker.Room.indiaStateModel;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -135,12 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         this.pressedOnce =true;
         makeToast("Double Click for Exit");
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    pressedOnce =false;
-                }
-            },2000);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> pressedOnce =false,2000);
 
     }
 
@@ -194,15 +187,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bottomNavigationView=findViewById(R.id.bottom_navigation_view);
     }
 
-    void setFragment(List<Root> root) {
+    void setCountryFragment(List<Root> root) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_PARAM1, (ArrayList<? extends Parcelable>) root);
         getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide,R.anim.slide)
+                .setCustomAnimations( R.anim.enter_from_left, R.anim.exit_to_left)               // enter    exit   pop enter pop exit
                 .replace(R.id.recycle_fragment, countriesData.class, args)
                 .commit();
     }
-
+    public void setStateFragment(List<Regional> states,
+                                 List<com.example.coronatracker.DataClasses.indiaContactModel.Regional> contacts) {
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(getString(state_key), (ArrayList<? extends Parcelable>) states);
+        args.putParcelableArrayList(getString(state_cont_key), (ArrayList<? extends Parcelable>) contacts);
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
+                .replace(R.id.recycle_fragment, indiaStateFragment.class, args)
+                .commit();
+    }
     void settingStart() {
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(false)
@@ -214,16 +216,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.search) {
-            Intent intent = new Intent(MainActivity.this, SearchHandle.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(COUNTRY_VAL, (ArrayList<? extends Parcelable>) rootList);
-            intent.putExtra(COUNTRY_INTENT, "country");
-            intent.putExtras(bundle);
-            startActivity(intent);
+            makeToast("search");
         } else if (itemId == R.id.call) {
-            startStateSearch();
+            makeToast("call");
         } else if (itemId == R.id.india_states) {
-                startIndianState();
+              makeToast("india States");
         } else if (itemId == R.id.safety) {
             makeToast("Safety");
         } else if (itemId == R.id.second || itemId == R.id.third) {
@@ -236,16 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toast.makeText(MainActivity.this,message,Toast.LENGTH_LONG).show();
     }
 
-    public void setStateFragment(List<Regional> states,
-            List<com.example.coronatracker.DataClasses.indiaContactModel.Regional> contacts) {
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(getString(state_key), (ArrayList<? extends Parcelable>) states);
-        args.putParcelableArrayList(getString(state_cont_key), (ArrayList<? extends Parcelable>) contacts);
-        getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide,R.anim.slide)
-                .replace(R.id.recycle_fragment, indiaStateFragment.class, args)
-                .commit();
-    }
+
 
     void startIndianState() {
 
@@ -255,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         myMethod.getContacts().enqueue(new Callback<stateContacts>() {
             @Override
             public void onResponse(@NonNull Call<stateContacts> call, @NonNull Response<stateContacts> response) {
+                assert response.body() != null;
                 contacts = response.body().data.contacts.regional;
             }
 
@@ -266,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mySecondMethod.getStates().enqueue(new Callback<indiaStates>() {
             @Override
             public void onResponse(@NonNull Call<indiaStates> call, @NonNull Response<indiaStates> response) {
+                assert response.body() != null;
                 states = response.body().data.regional;
                 setStateFragment(states, contacts);
             }
@@ -282,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(@NonNull Call<List<Root>> call, @NonNull Response<List<Root>> response) {
                 assert response.body() != null;
-                setFragment(response.body());
+                setCountryFragment(response.body());
                 rootList = response.body();
             }
 

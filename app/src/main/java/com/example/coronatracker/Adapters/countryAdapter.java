@@ -96,8 +96,9 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
         criticalCases.setText(String.valueOf(data.critical));
         casesPerMillion.setText(String.valueOf(data.casesPerOneMillion));
         deathsPerMillion.setText(String.valueOf(data.deathsPerOneMillion));
-//        CountryInfo info= data.countryInfo;
-//        Picasso.get().load(info.flag).noFade().resize(50, 22).into(countryFlag);
+        CountryInfo info= data.countryInfo;
+        if (info!=null)
+        Picasso.get().load(info.flag).noFade().resize(50, 22).into(countryFlag);
 
         new Handler().post(() -> box.setOnClickListener(v -> {
 
@@ -113,7 +114,7 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
                 expanded = true;
             }
         }));
-
+        setLeftAnimation(holder.itemView, position);
     }
 
     @Override
@@ -147,7 +148,7 @@ public class countryAdapter extends RecyclerView.Adapter<countryAdapter.viewHold
             countryFlag = itemView.findViewById(R.id.country_flag);
         }
     }
-    public static void setFadeAnimation(View view,int position){
+    public static void setLeftAnimation(View view, int position){
         // If the bound view wasn't previously displayed on screen, it's animated
         if (position > lastPosition)
         {
