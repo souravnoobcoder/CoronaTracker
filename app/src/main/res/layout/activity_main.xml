@@ -25,12 +25,7 @@
     android:background="@color/teal_50"
     android:layout_gravity="bottom"
    app:menu="@menu/main_bottom"/>
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/recycle_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layoutAnimation="@anim/layout_animation_xml"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -62,7 +57,20 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/recycle_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layoutAnimation="@anim/layout_animation_xml"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"

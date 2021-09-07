@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.coronatracker.Api.methods;
 import com.example.coronatracker.Api.newApi;
@@ -52,18 +53,19 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
-        , Toolbar.OnMenuItemClickListener {
+        , Toolbar.OnMenuItemClickListener ,SwipeRefreshLayout.OnRefreshListener {
     public static final String TAGO = "hello sir";
-    boolean expanded = false, pressedOnce =false,country=true;
-    AppBarLayout box;
+    boolean expanded = false, pressedOnce =false,country=true,stateLaunched=false;
     TextView totalPopulation, confirmed, recovered, deaths,
             casesToday, activeCases, deathsToday, criticalCases, casesPerMillion, deathsPerMillion, viewMore;
-    LinearLayout moreDataLayout;
-    private DrawerLayout drawer;
     List<Root> rootList;
     List<Regional> states;
     List<com.example.coronatracker.DataClasses.indiaContactModel.Regional> contacts;
     BottomNavigationView bottomNavigationView;
+    AppBarLayout box;
+    SwipeRefreshLayout layout;
+    LinearLayout moreDataLayout;
+    DrawerLayout drawer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,14 +111,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             int itemId = item.getItemId();
             if (itemId == R.id.india_info) {
                 country=false;
-                startIndianState();
+                if (!stateLaunched) {
+                    startIndianState();
+                    stateLaunched=true;
+                } else {
+                    setStateFragment(states,contacts);
+                }
             }
              else if (itemId == R.id.world_info) {
                  country=true;
-                setCountries();
+               setCountryFragment(rootList);
             }
             return true;
         });
+
+        layout.setOnRefreshListener(this);
     }
 
     @Override
@@ -171,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void initializeValues() {
         settingStart();
+        layout=findViewById(R.id.refresh_layout);
         viewMore = findViewById(R.id.viewMoreText);
         moreDataLayout = findViewById(R.id.moreDataLayout);
         box = findViewById(R.id.app_bar_layout);
@@ -313,4 +323,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
+    @Override
+    public void onRefresh() {
+            if (country)
+                setCountries();
+            else
+                startIndianState();
+        layout.setRefreshing(false);
+    }
 }
