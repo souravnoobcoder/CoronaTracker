@@ -2,6 +2,7 @@ package com.example.coronatracker.Fragments;
 
 import static com.example.coronatracker.Activities.MainActivity.TAGO;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -12,7 +13,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,9 +35,18 @@ public class indiaStateFragment extends Fragment {
     List<com.example.coronatracker.DataClasses.indiaContactModel.Regional> contacts;
     stateAdapter adapter;
     List<indiaStateModel> data;
+    private LifecycleOwner mViewLifecycleOwner;
+
     public indiaStateFragment() {
         // Required empty public constructor
         //contacts.data.contacts.regional.
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        myModel = ViewModelProviders.of(requireActivity()).get(viewModel.class);
+
     }
 
     @Override
@@ -61,7 +73,6 @@ public class indiaStateFragment extends Fragment {
             System.out.println(TAGO + "states or contacts is null");
             Log.v(TAGO, "states or contacts is null");
         }
-        myModel = ViewModelProviders.of(getActivity()).get(viewModel.class);
 
         RecyclerView recyclerView = requireView().findViewById(R.id.stateRecycle);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -72,12 +83,9 @@ public class indiaStateFragment extends Fragment {
                 recyclerView.setAdapter(adapter);
                 setRoom();
             } else {
-                myModel.getOfflineData().observe(getActivity(), new Observer<List<indiaStateModel>>() {
-                    @Override
-                    public void onChanged(List<indiaStateModel> indiaStateModels) {
-                        adapter = new stateAdapter(indiaStateModels);
-                        recyclerView.setAdapter(adapter);
-                    }
+                myModel.getOfflineData().observeForever(indiaStateModels -> {
+                    adapter = new stateAdapter(indiaStateModels);
+                    recyclerView.setAdapter(adapter);
                 });
                 System.out.println(TAGO + "data size is zero");
                 Log.v(TAGO, "data size is zero");
@@ -113,8 +121,14 @@ public class indiaStateFragment extends Fragment {
                 }
             }
         }
-
+        if (model.isEmpty())
+            System.out.println("googogogogo");
+        else System.out.println("googogogogooooooooooo");
         return model;
+    }
+
+    void sortArray() {
+
     }
 
     void setRoom() {

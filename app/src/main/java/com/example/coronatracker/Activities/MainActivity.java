@@ -2,32 +2,43 @@ package com.example.coronatracker.Activities;
 
 import static com.example.coronatracker.DataClasses.values.COUNTRY_INTENT;
 import static com.example.coronatracker.DataClasses.values.COUNTRY_VAL;
+import static com.example.coronatracker.DataClasses.values.DARK;
+import static com.example.coronatracker.DataClasses.values.DEFAULT;
+import static com.example.coronatracker.DataClasses.values.LIGHT;
+import static com.example.coronatracker.DataClasses.values.NEW_KEY;
 import static com.example.coronatracker.Fragments.countriesData.ARG_PARAM1;
+import static com.example.coronatracker.Funtions.MyApplication.KEY;
 import static com.example.coronatracker.R.string.navigation_drawer_close;
 import static com.example.coronatracker.R.string.navigation_drawer_open;
 import static com.example.coronatracker.R.string.state_cont_key;
 import static com.example.coronatracker.R.string.state_key;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.coronatracker.Api.methods;
@@ -40,6 +51,7 @@ import com.example.coronatracker.DataClasses.world;
 import com.example.coronatracker.Fragments.Launching;
 import com.example.coronatracker.Fragments.countriesData;
 import com.example.coronatracker.Fragments.indiaStateFragment;
+import com.example.coronatracker.Funtions.OnSwipeTouchListener;
 import com.example.coronatracker.R;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -66,13 +78,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SwipeRefreshLayout layout;
     LinearLayout moreDataLayout;
     DrawerLayout drawer;
+    FragmentContainerView fragmentContainerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String theme=getThemeStatus();
+        if(theme.equals(LIGHT)){
+            makeToast(theme);
+            setTheme(R.style.light);
+        }
+        if (theme.equals(DARK)){
+            makeToast(theme);
+            setTheme(R.style.night);
+        }
+        else{
+            makeToast(theme);
+            setTheme(R.style.Theme_CoronaTracker);
+        }
         setContentView(R.layout.activity_main);
 
         initializeValues();
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.showOverflowMenu();
@@ -110,22 +135,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.india_info) {
-                country=false;
+                country = false;
                 if (!stateLaunched) {
                     startIndianState();
-                    stateLaunched=true;
+                    stateLaunched = true;
                 } else {
-                    setStateFragment(states,contacts);
+                    setStateFragment(states, contacts);
                 }
-            }
-             else if (itemId == R.id.world_info) {
-                 country=true;
-               setCountryFragment(rootList);
+            } else if (itemId == R.id.world_info) {
+                country = true;
+                setCountryFragment(rootList);
             }
             return true;
         });
 
-        layout.setOnRefreshListener(this);
+     layout.setOnRefreshListener(this);
+
     }
 
     @Override
@@ -194,15 +219,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         criticalCases = findViewById(R.id.criticalCases_expandedCard);
         casesPerMillion = findViewById(R.id.casesPerMillion_expandedCard);
         deathsPerMillion = findViewById(R.id.deathsPerMillion_expandedCard);
-        bottomNavigationView=findViewById(R.id.bottom_navigation_view);
+        bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+        fragmentContainerView = findViewById(R.id.recycle_fragment_view);
     }
 
     void setCountryFragment(List<Root> root) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_PARAM1, (ArrayList<? extends Parcelable>) root);
         getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations( R.anim.enter_from_left, R.anim.exit_to_left)               // enter    exit   pop enter pop exit
-                .replace(R.id.recycle_fragment, countriesData.class, args)
+                .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left)               // enter    exit   pop enter pop exit
+                .replace(R.id.recycle_fragment_view, countriesData.class, args)
                 .commit();
     }
     public void setStateFragment(List<Regional> states,
@@ -212,30 +238,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         args.putParcelableArrayList(getString(state_cont_key), (ArrayList<? extends Parcelable>) contacts);
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
-                .replace(R.id.recycle_fragment, indiaStateFragment.class, args)
+                .replace(R.id.recycle_fragment_view, indiaStateFragment.class, args)
                 .commit();
     }
     void settingStart() {
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(false)
-                .replace(R.id.recycle_fragment, Launching.class, null)
+                .replace(R.id.recycle_fragment_view, Launching.class, null)
                 .commit();
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.search) {
+        if (itemId == R.id.search)
             makeToast("search");
-        } else if (itemId == R.id.call) {
+        else if (itemId == R.id.call)
             makeToast("call");
-        } else if (itemId == R.id.india_states) {
-              makeToast("india States");
-        } else if (itemId == R.id.safety) {
+        else if (itemId == R.id.change_theme)
+            makeAlert();
+        else if (itemId == R.id.safety)
             makeToast("Safety");
-        } else if (itemId == R.id.second || itemId == R.id.third) {
+        else if (itemId == R.id.second || itemId == R.id.third)
             makeToast("progress");
-        }
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -314,21 +340,68 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         intent.putExtra(COUNTRY_INTENT, "state");
         startActivity(intent);
     }
-    void startCountrySearch(){
+
+    void startCountrySearch() {
         Intent intent = new Intent(MainActivity.this, SearchHandle.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(COUNTRY_VAL, (ArrayList<? extends Parcelable>) rootList);
-        intent.putExtras(bundle);
+        intent.putParcelableArrayListExtra(COUNTRY_VAL, (ArrayList<? extends Parcelable>) rootList);
         intent.putExtra(COUNTRY_INTENT, "country");
         startActivity(intent);
     }
 
     @Override
     public void onRefresh() {
-            if (country)
-                setCountries();
-            else
-                startIndianState();
-        layout.setRefreshing(false);
+        if (country)
+            setCountries();
+        else
+            startIndianState();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                layout.setRefreshing(false);
+            }
+        }, 500);
+    }
+
+    void makeAlert() {
+       View themeView= getLayoutInflater().inflate(R.layout.theme_choice,null);
+      RadioButton dark= themeView.findViewById(R.id.dark_theme);
+      RadioButton light=themeView.findViewById(R.id.light_theme);
+      RadioButton default_theme=themeView.findViewById(R.id.default_theme);
+        if(getThemeStatus().equals(LIGHT))
+            light.setChecked(true);
+        if (getThemeStatus().equals(DARK))
+           dark.setChecked(true);
+        else default_theme.setChecked(true);
+        setContentView(R.layout.activity_main);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                   .setView(themeView)
+                .setTitle("Select Theme")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog1, int which) {
+                       if(light.isChecked())
+                           setThemeStatus(LIGHT);
+                       else if (dark.isChecked())
+                           setThemeStatus(DARK);
+                       else setThemeStatus(DEFAULT);
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
+    public String getThemeStatus() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return sharedPreferences.getString(NEW_KEY,LIGHT);
+    }
+
+    public void setThemeStatus(String mode) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(NEW_KEY,mode);
+        editor.apply();
+        finish();
+        startActivity(getIntent());
     }
 }

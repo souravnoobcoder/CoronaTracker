@@ -7,7 +7,7 @@
     tools:appDrawers="start"
     tools:context=".Activities.MainActivity"
     android:id="@+id/drawer_Layout"
-    android:theme="@style/Theme.CoronaTracker"
+    android:theme="@style/night"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -21,7 +21,7 @@
 <com.google.android.material.bottomnavigation.BottomNavigationView
     android:id="@+id/bottom_navigation_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="50dp"
     android:background="@color/teal_50"
     android:layout_gravity="bottom"
    app:menu="@menu/main_bottom"/>
@@ -64,9 +64,10 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             >
             <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/recycle_fragment"
+                android:id="@+id/recycle_fragment_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="50dp"
                 android:layoutAnimation="@anim/layout_animation_xml"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

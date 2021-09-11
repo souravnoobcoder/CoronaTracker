@@ -5,9 +5,9 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/india_states"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Indian States" />
+        <item android:id="@+id/change_theme"
+            android:icon="@drawable/ic_theme"
+            android:title="Change Theme" />
         <item android:id="@+id/search"
             android:icon="@drawable/search"
             android:title="Search" />

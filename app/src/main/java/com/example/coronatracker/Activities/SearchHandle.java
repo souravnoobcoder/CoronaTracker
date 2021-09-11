@@ -3,9 +3,11 @@ package com.example.coronatracker.Activities;
 import static com.example.coronatracker.DataClasses.values.COUNTRY_INTENT;
 import static com.example.coronatracker.DataClasses.values.COUNTRY_VAL;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,7 +47,7 @@ public class SearchHandle extends AppCompatActivity {
         if (know.equals("country")){
             inputEditText.setHint("Enter Country");
             adapter=new countryAdapter(null);
-            fullSearchingList = getIntent().getExtras().getParcelableArrayList(COUNTRY_VAL);
+            fullSearchingList = getIntent().getParcelableArrayListExtra(COUNTRY_VAL);
             recyclerView.setAdapter(adapter);
         }else {
             inputEditText.setHint("Enter state");
@@ -53,6 +55,7 @@ public class SearchHandle extends AppCompatActivity {
             recyclerView.setAdapter(adapterS);
             setStateList();
         }
+        inputEditText.setSelected(true);
     }
 
     @Override
@@ -95,14 +98,10 @@ public class SearchHandle extends AppCompatActivity {
     }
     List<indiaStateModel> sortingOfState(String searched){
         List<indiaStateModel> sortedList=new ArrayList<>();
-        for (int i = 0; i < 34; i++) {
+        for (int i = 0; i < fullSearchingListState.size(); i++) {
             if (fullSearchingListState.get(i).getLoc().toLowerCase().contains(searched))
                 sortedList.add(fullSearchingListState.get(i));
         }
-//        for (indiaStateModel unSort :fullSearchingListState) {
-//            if (unSort.getLoc().toLowerCase().contains(searched))
-//                sortedList.add(unSort);
-//        }
         return sortedList;
     }
 

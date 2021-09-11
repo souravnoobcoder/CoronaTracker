@@ -2,6 +2,8 @@ package com.example.coronatracker.Api;
 
 import androidx.annotation.NonNull;
 
+import com.example.coronatracker.Funtions.MyApplication;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -110,7 +112,7 @@ public class newApi {
                 Response response = chain.proceed(chain.request());
 
                 CacheControl cacheControl = new CacheControl.Builder()
-                        .maxAge(5, TimeUnit.SECONDS)
+                        .maxAge(3, TimeUnit.MINUTES)
                         .build();
 
                 return response.newBuilder()
@@ -125,14 +127,9 @@ public class newApi {
     private static HttpLoggingInterceptor httpLoggingInterceptor ()
     {
         HttpLoggingInterceptor httpLoggingInterceptor =
-                new HttpLoggingInterceptor( new HttpLoggingInterceptor.Logger()
-                {
-                    @Override
-                    public void log (String message)
-                    {
+                new HttpLoggingInterceptor(message -> {
 
-                    }
-                } );
+                });
         httpLoggingInterceptor.setLevel( HttpLoggingInterceptor.Level.BODY);
         return httpLoggingInterceptor;
     }

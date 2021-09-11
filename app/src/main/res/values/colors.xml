@@ -8,5 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="toobar">#73DBEA</color>
-    <color name="teal_50">#C1F8F2</color>
+    <color name="teal_50">#DAEDEB</color>
+    <color name="teal_25">#CEE6E4</color>
+    <color name="black_grey">#5E5757</color>
 </resources>

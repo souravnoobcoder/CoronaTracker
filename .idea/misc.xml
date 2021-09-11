@@ -15,7 +15,7 @@
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/drawable/search.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/drawable/shape_of_main.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/drawable/world.xml" value="0.20833333333333334" />
-        <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/activity_map.xml" value="0.178125" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/activity_search_handle.xml" value="0.22" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/content_map.xml" value="0.1921875" />
@@ -28,10 +28,12 @@
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/navigation.xml" value="0.22" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/sample.xml" value="0.25" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/text.xml" value="0.1" />
+        <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/layout/theme_choice.xml" value="0.25" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/menu/main_bottom.xml" value="0.33" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/menu/main_menu.xml" value="0.22" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/menu/navigation_menu.xml" value="0.33" />
         <entry key="..\:/Users/pro/AndroidStudioProjects/progress/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/pro/AndroidStudioProjects/progress/featue/src/main/res/layout/activity_main.xml" value="0.1921875" />
       </map>
     </option>
   </component>
