@@ -44,7 +44,7 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
 
-                <include layout="@layout/sample" />
+                <include layout="@layout/country_item" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -61,6 +61,8 @@
             android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:outlineAmbientShadowColor="@color/purple_700"
+            android:outlineSpotShadowColor="@color/purple_700"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             >
             <androidx.fragment.app.FragmentContainerView

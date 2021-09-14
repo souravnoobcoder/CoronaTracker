@@ -14,7 +14,7 @@
         app:strokeColor="@color/purple_700"
         android:layout_height="wrap_content">
 
-       <include layout="@layout/sample"/>
+       <include layout="@layout/country_item"/>
         <ImageView
             android:id="@+id/country_flag"
             android:layout_width="50dp"
