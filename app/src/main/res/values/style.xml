@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="light">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/toobar</item>
+        <item name="colorPrimary">@color/toolbar</item>
         <item name="colorPrimaryVariant">@color/teal_200</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -15,7 +15,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
     </style>
     <style name="night" parent="light">
-        <item name="colorPrimary">@color/toobar</item>
+        <item name="colorPrimary">@color/toolbar</item>
         <item name="colorPrimaryVariant">@color/purple_500</item>
         <item name="colorOnPrimary">@color/purple_200</item>
         <!-- Secondary brand color. -->

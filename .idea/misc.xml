@@ -46,6 +46,13 @@
   <component name="ProjectType">
     <option name="id" value="Android" />
   </component>
+  <component name="SuppressABINotification">
+    <option name="modulesWithSuppressedNotConfigured">
+      <set>
+        <option value="CoronaTracker.featue" />
+      </set>
+    </option>
+  </component>
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
