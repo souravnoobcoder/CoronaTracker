@@ -1,26 +1,22 @@
-package com.example.coronatracker.Api;
+package com.example.coronatracker.api
 
-import com.example.coronatracker.dataClasses.Root;
-import com.example.coronatracker.dataClasses.indiaContactModel.stateContacts;
-import com.example.coronatracker.dataClasses.indiaModel.indiaStates;
-import com.example.coronatracker.dataClasses.world;
+import com.example.coronatracker.dataClasses.Root
+import retrofit2.http.GET
+import com.example.coronatracker.dataClasses.world
+import com.example.coronatracker.dataClasses.indiaContactModel.stateContacts
+import com.example.coronatracker.dataClasses.indiaModel.indiaStates
+import retrofit2.Call
 
-import java.util.List;
+interface methods {
+    @get:GET("covid-19/countries")
+    val data: Call<List<Root?>>
 
-import retrofit2.Call;
-import retrofit2.http.GET;
+    @get:GET("all?yesterday")
+    val world: Call<world?>?
 
+    @get:GET("covid19-in/contacts")
+    val contacts: Call<stateContacts?>?
 
-public interface methods {
-    @GET("covid-19/countries")
-    Call<List<Root>> getData();
-
-    @GET("all?yesterday")
-    Call<world> getWorld();
-
-    @GET("covid19-in/contacts")
-    Call<stateContacts> getContacts();
-
-    @GET("covid19-in/stats/latest")
-    Call<indiaStates> getStates();
+    @get:GET("covid19-in/stats/latest")
+    val states: Call<indiaStates?>?
 }

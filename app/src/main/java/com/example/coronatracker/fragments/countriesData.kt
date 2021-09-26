@@ -1,53 +1,44 @@
-package com.example.coronatracker.fragments;
+package com.example.coronatracker.fragments
 
-import android.os.Bundle;
+import com.example.coronatracker.adapters.CountryAdapter
+import android.os.Bundle
+import com.example.coronatracker.fragments.countriesData
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.coronatracker.R
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.coronatracker.dataClasses.Root
+import java.util.ArrayList
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.example.coronatracker.Adapters.countryAdapter;
-import com.example.coronatracker.dataClasses.Root;
-import com.example.coronatracker.R;
-
-import java.util.ArrayList;
-
-public class countriesData extends Fragment {
-
-    public static final String ARG_PARAM1 = "param1";
-    ArrayList<Root> DATA;
-    countryAdapter adapter;
-
-    public countriesData() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-           DATA = getArguments().getParcelableArrayList(ARG_PARAM1);
+class countriesData : Fragment() {
+    var DATA: ArrayList<Root>? = null
+    var adapter: CountryAdapter? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (arguments != null) {
+            DATA = requireArguments().getParcelableArrayList(ARG_PARAM1)
         }
-        adapter=new countryAdapter(DATA);
+        adapter = CountryAdapter(DATA)
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.country_data, container, false);
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.country_data, container, false)
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = requireView().findViewById(R.id.recycle);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val recyclerView: RecyclerView = requireView().findViewById(R.id.recycle)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = adapter
+    }
+
+    companion object {
+        const val ARG_PARAM1 = "param1"
     }
 }

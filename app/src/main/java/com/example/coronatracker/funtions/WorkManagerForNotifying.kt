@@ -19,8 +19,8 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.coronatracker.activities.MainActivity
-import com.example.coronatracker.Api.methods
-import com.example.coronatracker.Api.newApi
+import com.example.coronatracker.api.methods
+import com.example.coronatracker.api.NewsApi
 import com.example.coronatracker.dataClasses.Root
 import com.example.coronatracker.R
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -86,8 +86,9 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
 
 
         print("work manager is calles")
-        val method = newApi.getApiInstance().create(methods::class.java)
-        method.data.enqueue(object : Callback<List<Root?>> {
+        val method = NewsApi.apiInstance?.create(methods::class.java)
+
+        method?.data?.enqueue(object : Callback<List<Root?>> {
 
             override fun onResponse(call: Call<List<Root?>>, response: Response<List<Root?>>) {
                 print("work manager is called")

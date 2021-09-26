@@ -1,33 +1,27 @@
-package com.example.coronatracker.funtions;
+package com.example.coronatracker.funtions
 
+import android.app.Application
+import com.example.coronatracker.funtions.MyApplication
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.os.Build
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import androidx.work.PeriodicWorkRequest
+import com.example.coronatracker.funtions.WorkManagerForNotifying
+import androidx.work.WorkManager
+import java.util.concurrent.TimeUnit
 
-import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Build;
-
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-
-import java.util.concurrent.TimeUnit;
-
-public class MyApplication extends Application {
-    public static final String CHANNEL_ID = "myChannel";
-    public static final String KEY = "key_for_theme";
-    // private FusedLocationProviderClient fusedLocationClient;
-    private static MyApplication instance;
-    @Override
-    public void onCreate() {
-        super.onCreate();
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
         if (instance == null) {
-            instance = this;
+            instance = this
         }
-        notificationCreator();
-        setupWorker();
-//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        notificationCreator()
+        setupWorker()
+        //        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 //        fusedLocationClient.getLastLocation()
 //                .addOnSuccessListener(new OnSuccessListener<Location>() {
 //                    @Override
@@ -37,39 +31,52 @@ public class MyApplication extends Application {
 //                })
     }
 
-    public static Context getInstance(){
-        return instance;
-    }
+    private val isNetworkConnected: Boolean
+        get() {
+            val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+            val activeNetwork = cm.activeNetworkInfo
+            return activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting
+        }
 
-    public static boolean hasNetwork(){
-        return instance.isNetworkConnected();
-    }
-
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-    }
-
-    private void notificationCreator() {
+    private fun notificationCreator() {
 
         // collapsedNotify.setTextViewText(R.id.deathsTextView,"ngo");
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
-                    "channel Name", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel.setDescription("lets see how foreground works");
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(notificationChannel);
+            val notificationChannel = NotificationChannel(
+                CHANNEL_ID,
+                "channel Name", NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationChannel.description = "lets see how foreground works"
+            val manager = getSystemService(
+                NotificationManager::class.java
+            )
+            manager.createNotificationChannel(notificationChannel)
         }
     }
 
-    void setupWorker() {
-        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest
-                .Builder(WorkManagerForNotifying.class, 10, TimeUnit.MINUTES)
-                .build();
-        WorkManager.getInstance(this).enqueue(periodicWorkRequest);
+    private fun setupWorker() {
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(
+            WorkManagerForNotifying::class.java, 10, TimeUnit.MINUTES
+        )
+            .build()
+        WorkManager.getInstance(this).enqueue(periodicWorkRequest)
+    }
+
+    companion object {
+        const val CHANNEL_ID = "myChannel"
+        const val KEY = "key_for_theme"
+
+        // private FusedLocationProviderClient fusedLocationClient;
+        private var instance: MyApplication? = null
+        @JvmStatic
+        fun getInstance(): Context? {
+            return instance
+        }
+
+        @JvmStatic
+        fun hasNetwork(): Boolean {
+            return instance!!.isNetworkConnected
+        }
     }
 }

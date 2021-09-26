@@ -4,8 +4,8 @@ package com.example.coronatracker.activities
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.example.coronatracker.room.indiaStateModel
-import com.example.coronatracker.Adapters.countryAdapter
-import com.example.coronatracker.Adapters.stateAdapter
+import com.example.coronatracker.adapters.CountryAdapter
+import com.example.coronatracker.adapters.StateAdapter
 import android.text.TextWatcher
 import android.os.Bundle
 import com.example.coronatracker.R
@@ -21,14 +21,14 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.util.ArrayList
 
-class SearchHandle() : AppCompatActivity() {
+class SearchHandle : AppCompatActivity() {
     var inputEditText: TextInputEditText? = null
     var know: String? = null
     val model: viewModel= ViewModelProviders.of(this).get(viewModel::class.java)
     private var fullSearchingList: List<Root>? = null
     private var fullSearchingListState: List<indiaStateModel?>? = null
-    var adapter: countryAdapter? = null
-    var adapterS: stateAdapter? = null
+    var adapter: CountryAdapter? = null
+    var adapterS: StateAdapter? = null
     var textWatcher: TextWatcher? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +41,12 @@ class SearchHandle() : AppCompatActivity() {
         know = intent.getStringExtra(values.COUNTRY_INTENT)
         if ((know == "country")) {
             inputEditText?.setHint("Enter Country")
-            adapter = countryAdapter(null)
+            adapter = CountryAdapter(null)
             fullSearchingList = intent.getParcelableArrayListExtra(values.COUNTRY_VAL)
             recyclerView.adapter = adapter
         } else {
             inputEditText?.setHint("Enter state")
-            adapterS = stateAdapter(null)
+            adapterS = StateAdapter(null)
             recyclerView.adapter = adapterS
             setStateList()
         }
@@ -62,7 +62,7 @@ class SearchHandle() : AppCompatActivity() {
                     sorting(
                         s.toString().toLowerCase()
                     )
-                ) else adapterS!!.update(sortingOfState(s.toString().toLowerCase()))
+                ) else adapterS!!.update(sortingOfState(s.toString().toLowerCase()) as List<indiaStateModel>)
             }
         }
         inputEditText!!.addTextChangedListener(textWatcher)

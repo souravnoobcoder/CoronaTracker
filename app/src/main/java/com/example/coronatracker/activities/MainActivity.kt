@@ -1,405 +1,387 @@
-package com.example.coronatracker.activities;
+package com.example.coronatracker.activities
 
-import static com.example.coronatracker.dataClasses.values.COUNTRY_INTENT;
-import static com.example.coronatracker.dataClasses.values.COUNTRY_VAL;
-import static com.example.coronatracker.dataClasses.values.DARK;
-import static com.example.coronatracker.dataClasses.values.DEFAULT;
-import static com.example.coronatracker.dataClasses.values.LIGHT;
-import static com.example.coronatracker.dataClasses.values.NEW_KEY;
-import static com.example.coronatracker.fragments.countriesData.ARG_PARAM1;
-import static com.example.coronatracker.R.string.navigation_drawer_close;
-import static com.example.coronatracker.R.string.navigation_drawer_open;
-import static com.example.coronatracker.R.string.state_cont_key;
-import static com.example.coronatracker.R.string.state_key;
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.navigation.NavigationView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import android.widget.TextView
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.appbar.AppBarLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import android.widget.LinearLayout
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentContainerView
+import android.os.Bundle
+import com.example.coronatracker.dataClasses.values
+import com.example.coronatracker.R
+import com.example.coronatracker.R.string
+import com.example.coronatracker.api.methods
+import com.example.coronatracker.api.NewsApi
+import com.example.coronatracker.dataClasses.world
+import android.widget.Toast
+import androidx.core.view.GravityCompat
+import android.os.Looper
+import com.example.coronatracker.fragments.countriesData
+import android.os.Parcelable
+import com.example.coronatracker.fragments.IndiaStateFragment
+import com.example.coronatracker.fragments.Launching
+import com.example.coronatracker.dataClasses.indiaContactModel.stateContacts
+import com.example.coronatracker.dataClasses.indiaModel.indiaStates
+import android.content.Intent
+import android.widget.RadioButton
+import android.os.Handler
+import android.preference.PreferenceManager
+import android.transition.AutoTransition
+import android.transition.TransitionManager
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
+import com.example.coronatracker.dataClasses.Root
+import com.example.coronatracker.dataClasses.indiaModel.Regional
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.ArrayList
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
-import android.transition.AutoTransition;
-import android.transition.TransitionManager;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentContainerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.example.coronatracker.Api.methods;
-import com.example.coronatracker.Api.newApi;
-import com.example.coronatracker.dataClasses.Root;
-import com.example.coronatracker.dataClasses.indiaContactModel.stateContacts;
-import com.example.coronatracker.dataClasses.indiaModel.Regional;
-import com.example.coronatracker.dataClasses.indiaModel.indiaStates;
-import com.example.coronatracker.dataClasses.world;
-import com.example.coronatracker.fragments.Launching;
-import com.example.coronatracker.fragments.countriesData;
-import com.example.coronatracker.fragments.indiaStateFragment;
-import com.example.coronatracker.R;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
-        , Toolbar.OnMenuItemClickListener ,SwipeRefreshLayout.OnRefreshListener {
-    public static final String TAGO = "hello sir";
-    boolean expanded = false, pressedOnce =false,country=true,stateLaunched=false;
-    TextView totalPopulation, confirmed, recovered, deaths,
-            casesToday, activeCases, deathsToday, criticalCases, casesPerMillion, deathsPerMillion, viewMore;
-    List<Root> rootList;
-    List<Regional> states;
-    List<com.example.coronatracker.dataClasses.indiaContactModel.Regional> contacts;
-    BottomNavigationView bottomNavigationView;
-    AppBarLayout box;
-    SwipeRefreshLayout layout;
-    LinearLayout moreDataLayout;
-    DrawerLayout drawer;
-    FragmentContainerView fragmentContainerView;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        String theme=getThemeStatus();
-        if(theme.equals(LIGHT)){
-            makeToast(theme);
-            setTheme(R.style.light);
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    Toolbar.OnMenuItemClickListener, OnRefreshListener {
+    var expanded = false
+    var pressedOnce = false
+    var country = true
+    var stateLaunched = false
+    var totalPopulation: TextView? = null
+    var confirmed: TextView? = null
+    var recovered: TextView? = null
+    var deaths: TextView? = null
+    var casesToday: TextView? = null
+    var activeCases: TextView? = null
+    var deathsToday: TextView? = null
+    var criticalCases: TextView? = null
+    var casesPerMillion: TextView? = null
+    var deathsPerMillion: TextView? = null
+    var viewMore: TextView? = null
+    var rootList: List<Root?>? = null
+    var states: List<Regional?>? = null
+    var contacts: List<com.example.coronatracker.dataClasses.indiaContactModel.Regional?>? = null
+    var bottomNavigationView: BottomNavigationView? = null
+    var box: AppBarLayout? = null
+    var layout: SwipeRefreshLayout? = null
+    var moreDataLayout: LinearLayout? = null
+    var drawer: DrawerLayout? = null
+    var fragmentContainerView: FragmentContainerView? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val theme = themeStatus
+        if (theme == values.LIGHT) {
+            makeToast(theme)
+            setTheme(R.style.light)
         }
-        if (theme.equals(DARK)){
-            makeToast(theme);
-            setTheme(R.style.night);
+        if (theme == values.DARK) {
+            makeToast(theme)
+            setTheme(R.style.night)
+        } else {
+            makeToast(theme)
+            setTheme(R.style.Theme_CoronaTracker)
         }
-        else{
-            makeToast(theme);
-            setTheme(R.style.Theme_CoronaTracker);
-        }
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main)
+        initializeValues()
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        toolbar.showOverflowMenu()
+        drawer = findViewById(R.id.drawer_Layout)
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener(this)
+        val toggle = ActionBarDrawerToggle(
+            this, drawer, toolbar,
+            string.navigation_drawer_open, string.navigation_drawer_close
+        )
+        drawer?.addDrawerListener(toggle)
+        toggle.syncState()
+        val worldM = NewsApi.world?.create(methods::class.java)
+            worldM?.world?.enqueue(object : Callback<world?> {
+                override fun onResponse(call: Call<world?>, response: Response<world?>) {
+                    val w = response.body()!!
+                    setWorld(
+                        w.population.toString(),
+                        w.cases.toString(),
+                        w.recovered.toString(),
+                        w.deaths.toString(),
+                        w.todayCases.toString(),
+                        w.active.toString(),
+                        w.todayDeaths.toString(),
+                        w.critical.toString(),
+                        w.casesPerOneMillion.toString(),
+                        w.deathsPerOneMillion.toString()
+                    )
+                }
 
-        initializeValues();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.showOverflowMenu();
-
-        drawer = findViewById(R.id.drawer_Layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                navigation_drawer_open, navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        methods worldM=newApi.getWorld().create(methods.class);
-        worldM.getWorld().enqueue(new Callback<world>() {
-            @Override
-            public void onResponse(@NonNull Call<world> call, @NonNull Response<world> response) {
-                world w=response.body();
-                assert w != null;
-                setWorld(String.valueOf(w.population),String.valueOf(w.cases),String.valueOf(w.recovered)
-                        ,String.valueOf(w.deaths),String.valueOf(w.todayCases),String.valueOf(w.active),
-                        String.valueOf(w.todayDeaths),String.valueOf(w.critical),String.valueOf(w.casesPerOneMillion)
-                        ,String.valueOf(w.deathsPerOneMillion));
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<world> call, @NonNull Throwable t) {
-                Toast.makeText(MainActivity.this, "Unable to load Data", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-        setCountries();
-
-        toolbar.setOnMenuItemClickListener(this);
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            int itemId = item.getItemId();
+                override fun onFailure(call: Call<world?>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, "Unable to load Data", Toast.LENGTH_SHORT).show()
+                }
+            })
+        setCountries()
+        toolbar.setOnMenuItemClickListener(this)
+        bottomNavigationView!!.setOnNavigationItemSelectedListener { item: MenuItem ->
+            val itemId = item.itemId
             if (itemId == R.id.india_info) {
-                country = false;
+                country = false
                 if (!stateLaunched) {
-                    startIndianState();
-                    stateLaunched = true;
+                    startIndianState()
+                    stateLaunched = true
                 } else {
-                    setStateFragment(states, contacts);
+                    setStateFragment(states, contacts)
                 }
             } else if (itemId == R.id.world_info) {
-                country = true;
-                setCountryFragment(rootList);
+                country = true
+                setCountryFragment(rootList)
             }
-            return true;
-        });
-
-     layout.setOnRefreshListener(this);
-
+            true
+        }
+        layout!!.setOnRefreshListener(this)
     }
 
-    @Override
-    public void onBackPressed() {
-
-        if (drawer.isDrawerOpen(GravityCompat.START)){
-            drawer.closeDrawer(GravityCompat.START);
-            return;
+    override fun onBackPressed() {
+        if (drawer!!.isDrawerOpen(GravityCompat.START)) {
+            drawer!!.closeDrawer(GravityCompat.START)
+            return
+        } else if (pressedOnce) {
+            super.onBackPressed()
+            return
         }
-
-        else if (pressedOnce){
-            super.onBackPressed();
-            return;
-        }
-        this.pressedOnce =true;
-        makeToast("Double Click for Exit");
-            new Handler(Looper.getMainLooper()).postDelayed(() -> pressedOnce =false,2000);
-
+        pressedOnce = true
+        makeToast("Double Click for Exit")
+        Handler(Looper.getMainLooper()).postDelayed({ pressedOnce = false }, 2000)
     }
 
-    public void toolClick(View view) {
+    fun toolClick() {
         if (expanded) {
-            TransitionManager.beginDelayedTransition(box, new AutoTransition());
-            moreDataLayout.setVisibility(View.GONE);
-            viewMore.setVisibility(View.VISIBLE);
-            expanded = false;
+            TransitionManager.beginDelayedTransition(box, AutoTransition())
+            moreDataLayout!!.visibility = View.GONE
+            viewMore!!.visibility = View.VISIBLE
+            expanded = false
         } else {
-            TransitionManager.beginDelayedTransition(box, new AutoTransition());
-            viewMore.setVisibility(View.GONE);
-            moreDataLayout.setVisibility(View.VISIBLE);
-            expanded = true;
+            TransitionManager.beginDelayedTransition(box, AutoTransition())
+            viewMore!!.visibility = View.GONE
+            moreDataLayout!!.visibility = View.VISIBLE
+            expanded = true
         }
     }
 
-    private void setWorld(String totalPopulation, String confirmed, String recovered, String deaths,
-                          String casesToday, String activeCases, String deathsToday, String criticalCases, String casesPerMillion
-            , String deathsPerMillion) {
-        new Handler().post(() -> {
-            MainActivity.this.totalPopulation.setText(totalPopulation);
-            MainActivity.this.confirmed.setText(confirmed);
-            MainActivity.this.recovered.setText(recovered);
-            MainActivity.this.deaths.setText(deaths);
-            MainActivity.this.casesToday.setText(casesToday);
-            MainActivity.this.activeCases.setText(activeCases);
-            MainActivity.this.deathsToday.setText(deathsToday);
-            MainActivity.this.criticalCases.setText(criticalCases);
-            MainActivity.this.casesPerMillion.setText(casesPerMillion);
-            MainActivity.this.deathsPerMillion.setText(deathsPerMillion);
-        });
-
-    }
-
-    private void initializeValues() {
-        settingStart();
-        layout=findViewById(R.id.refresh_layout);
-        viewMore = findViewById(R.id.viewMoreText);
-        moreDataLayout = findViewById(R.id.moreDataLayout);
-        box = findViewById(R.id.app_bar_layout);
-        totalPopulation = findViewById(R.id.total_populationNumber);
-        confirmed = findViewById(R.id.confirmedCaseTextView);
-        recovered = findViewById(R.id.recoveredTextView);
-        deaths = findViewById(R.id.deathsTextView);
-        casesToday = findViewById(R.id.casesToday_expandedCard);
-        activeCases = findViewById(R.id.activeCases_expandedCard);
-        deathsToday = findViewById(R.id.deathsToday_expandedCard);
-        criticalCases = findViewById(R.id.criticalCases_expandedCard);
-        casesPerMillion = findViewById(R.id.casesPerMillion_expandedCard);
-        deathsPerMillion = findViewById(R.id.deathsPerMillion_expandedCard);
-        bottomNavigationView = findViewById(R.id.bottom_navigation_view);
-        fragmentContainerView = findViewById(R.id.recycle_fragment_view);
-    }
-
-    void setCountryFragment(List<Root> root) {
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(ARG_PARAM1, (ArrayList<? extends Parcelable>) root);
-        getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left)               // enter    exit   pop enter pop exit
-                .replace(R.id.recycle_fragment_view, countriesData.class, args)
-                .commit();
-    }
-    public void setStateFragment(List<Regional> states,
-                                 List<com.example.coronatracker.dataClasses.indiaContactModel.Regional> contacts) {
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(getString(state_key), (ArrayList<? extends Parcelable>) states);
-        args.putParcelableArrayList(getString(state_cont_key), (ArrayList<? extends Parcelable>) contacts);
-        getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
-                .replace(R.id.recycle_fragment_view, indiaStateFragment.class, args)
-                .commit();
-    }
-    void settingStart() {
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(false)
-                .replace(R.id.recycle_fragment_view, Launching.class, null)
-                .commit();
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == R.id.search)
-            makeToast("search");
-        else if (itemId == R.id.call)
-            makeToast("call");
-        else if (itemId == R.id.change_theme)
-            makeAlert();
-        else if (itemId == R.id.safety)
-            makeToast("Safety");
-        else if (itemId == R.id.second || itemId == R.id.third)
-            makeToast("progress");
-
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-    void makeToast(String message){
-        Toast.makeText(MainActivity.this,message,Toast.LENGTH_LONG).show();
-    }
-
-
-
-    void startIndianState() {
-
-        methods myMethod = newApi.getIndiaState().create(methods.class);
-        methods mySecondMethod = newApi.getIndiaState().create(methods.class);
-
-        myMethod.getContacts().enqueue(new Callback<stateContacts>() {
-            @Override
-            public void onResponse(@NonNull Call<stateContacts> call, @NonNull Response<stateContacts> response) {
-                assert response.body() != null;
-                contacts = response.body().data.contacts.regional;
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<stateContacts> call, @NonNull Throwable t) {
-                makeToast("Failed to Get States Contacts");
-            }
-        });
-        mySecondMethod.getStates().enqueue(new Callback<indiaStates>() {
-            @Override
-            public void onResponse(@NonNull Call<indiaStates> call, @NonNull Response<indiaStates> response) {
-                assert response.body() != null;
-                states = response.body().data.regional;
-                setStateFragment(states, contacts);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<indiaStates> call, @NonNull Throwable t) {
-                makeToast("Failed to Get States");
-            }
-        });
-    }
-    void setCountries(){
-        methods method = newApi.getApiInstance().create(methods.class);
-        method.getData().enqueue(new Callback<List<Root>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Root>> call, @NonNull Response<List<Root>> response) {
-                assert response.body() != null;
-                setCountryFragment(response.body());
-                rootList = response.body();
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Root>> call, @NonNull Throwable t) {
-                makeToast("Unable to load Data");
-            }
-        });
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        if (item.getItemId() == R.id.search_bar_option) {
-            if (country)
-            startCountrySearch();
-            else startStateSearch();
+    private fun setWorld(
+        totalPopulation: String,
+        confirmed: String,
+        recovered: String,
+        deaths: String,
+        casesToday: String,
+        activeCases: String,
+        deathsToday: String,
+        criticalCases: String,
+        casesPerMillion: String,
+        deathsPerMillion: String
+    ) {
+        Handler().post {
+            this@MainActivity.totalPopulation!!.text = totalPopulation
+            this@MainActivity.confirmed!!.text = confirmed
+            this@MainActivity.recovered!!.text = recovered
+            this@MainActivity.deaths!!.text = deaths
+            this@MainActivity.casesToday!!.text = casesToday
+            this@MainActivity.activeCases!!.text = activeCases
+            this@MainActivity.deathsToday!!.text = deathsToday
+            this@MainActivity.criticalCases!!.text = criticalCases
+            this@MainActivity.casesPerMillion!!.text = casesPerMillion
+            this@MainActivity.deathsPerMillion!!.text = deathsPerMillion
         }
-        return true;
     }
 
-    void startStateSearch() {
-        Intent intent = new Intent(MainActivity.this, SearchHandle.class);
-        intent.putExtra(COUNTRY_INTENT, "state");
-        startActivity(intent);
+    private fun initializeValues() {
+        settingStart()
+        layout = findViewById(R.id.refresh_layout)
+        viewMore = findViewById(R.id.viewMoreText)
+        moreDataLayout = findViewById(R.id.moreDataLayout)
+        box = findViewById(R.id.app_bar_layout)
+        totalPopulation = findViewById(R.id.total_populationNumber)
+        confirmed = findViewById(R.id.confirmedCaseTextView)
+        recovered = findViewById(R.id.recoveredTextView)
+        deaths = findViewById(R.id.deathsTextView)
+        casesToday = findViewById(R.id.casesToday_expandedCard)
+        activeCases = findViewById(R.id.activeCases_expandedCard)
+        deathsToday = findViewById(R.id.deathsToday_expandedCard)
+        criticalCases = findViewById(R.id.criticalCases_expandedCard)
+        casesPerMillion = findViewById(R.id.casesPerMillion_expandedCard)
+        deathsPerMillion = findViewById(R.id.deathsPerMillion_expandedCard)
+        bottomNavigationView = findViewById(R.id.bottom_navigation_view)
+        fragmentContainerView = findViewById(R.id.recycle_fragment_view)
     }
 
-    void startCountrySearch() {
-        Intent intent = new Intent(MainActivity.this, SearchHandle.class);
-        intent.putParcelableArrayListExtra(COUNTRY_VAL, (ArrayList<? extends Parcelable>) rootList);
-        intent.putExtra(COUNTRY_INTENT, "country");
-        startActivity(intent);
+    fun setCountryFragment(root: List<Root?>?) {
+        val args = Bundle()
+        args.putParcelableArrayList(countriesData.ARG_PARAM1, root as ArrayList<out Parcelable?>?)
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.enter_from_left,
+                R.anim.exit_to_left
+            ) // enter    exit   pop enter pop exit
+            .replace(R.id.recycle_fragment_view, countriesData::class.java, args)
+            .commit()
     }
 
-    @Override
-    public void onRefresh() {
-        if (country)
-            setCountries();
-        else
-            startIndianState();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                layout.setRefreshing(false);
+    fun setStateFragment(
+        states: List<Regional?>?,
+        contacts: List<com.example.coronatracker.dataClasses.indiaContactModel.Regional?>?
+    ) {
+        val args = Bundle()
+        args.putParcelableArrayList(
+            getString(string.state_key),
+            states as ArrayList<out Parcelable?>?
+        )
+        args.putParcelableArrayList(
+            getString(string.state_cont_key),
+            contacts as ArrayList<out Parcelable?>?
+        )
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
+            .replace(R.id.recycle_fragment_view, IndiaStateFragment::class.java, args)
+            .commit()
+    }
+
+    private fun settingStart() {
+        supportFragmentManager.beginTransaction()
+            .setReorderingAllowed(false)
+            .replace(R.id.recycle_fragment_view, Launching::class.java, null)
+            .commit()
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val itemId = item.itemId
+        if (itemId == R.id.search) makeToast("search") else if (itemId == R.id.call) makeToast("call") else if (itemId == R.id.change_theme) makeAlert() else if (itemId == R.id.safety) makeToast(
+            "Safety"
+        ) else if (itemId == R.id.second || itemId == R.id.third) makeToast("progress")
+        drawer!!.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+    fun makeToast(message: String?) {
+        Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun startIndianState() {
+        val myMethod = NewsApi.indiaState?.create(methods::class.java)
+        val mySecondMethod = NewsApi.indiaState?.create(methods::class.java)
+        if (myMethod != null) {
+            myMethod.contacts?.enqueue(object : Callback<stateContacts?> {
+                override fun onResponse(
+                    call: Call<stateContacts?>,
+                    response: Response<stateContacts?>
+                ) {
+                    assert(response.body() != null)
+                    contacts = response.body()!!.data.contacts.regional
+                }
+
+                override fun onFailure(call: Call<stateContacts?>, t: Throwable) {
+                    makeToast("Failed to Get States Contacts")
+                }
+            })
+        }
+        mySecondMethod?.states?.enqueue(object : Callback<indiaStates?> {
+            override fun onResponse(call: Call<indiaStates?>, response: Response<indiaStates?>) {
+                assert(response.body() != null)
+                states = response.body()!!.data.regional
+                setStateFragment(states, contacts)
             }
-        }, 500);
+
+            override fun onFailure(call: Call<indiaStates?>, t: Throwable) {
+                makeToast("Failed to Get States")
+            }
+        })
     }
 
-    void makeAlert() {
-       View themeView= getLayoutInflater().inflate(R.layout.theme_choice,null);
-      RadioButton dark= themeView.findViewById(R.id.dark_theme);
-      RadioButton light=themeView.findViewById(R.id.light_theme);
-      RadioButton default_theme=themeView.findViewById(R.id.default_theme);
-        if(getThemeStatus().equals(LIGHT))
-            light.setChecked(true);
-        if (getThemeStatus().equals(DARK))
-           dark.setChecked(true);
-        else default_theme.setChecked(true);
-        setContentView(R.layout.activity_main);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                   .setView(themeView)
-                .setTitle("Select Theme")
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog1, int which) {
-                       if(light.isChecked())
-                           setThemeStatus(LIGHT);
-                       else if (dark.isChecked())
-                           setThemeStatus(DARK);
-                       else setThemeStatus(DEFAULT);
-                    }
-                })
-                .create();
-        dialog.show();
+    private fun setCountries() {
+        val method = NewsApi.apiInstance?.create(methods::class.java)
+        method?.data?.enqueue(object : Callback<List<Root?>?> {
+            override fun onResponse(call: Call<List<Root?>?>, response: Response<List<Root?>?>) {
+                assert(response.body() != null)
+                setCountryFragment(response.body())
+                rootList = response.body()
+            }
+
+            override fun onFailure(call: Call<List<Root?>?>, t: Throwable) {
+                makeToast("Unable to load Data")
+            }
+        })
     }
 
-    public String getThemeStatus() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        return sharedPreferences.getString(NEW_KEY,LIGHT);
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
     }
 
-    public void setThemeStatus(String mode) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(NEW_KEY,mode);
-        editor.apply();
-        finish();
-        startActivity(getIntent());
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        if (item.itemId == R.id.search_bar_option) {
+            if (country) startCountrySearch() else startStateSearch()
+        }
+        return true
+    }
+
+    private fun startStateSearch() {
+        val intent = Intent(this@MainActivity, SearchHandle::class.java)
+        intent.putExtra(values.COUNTRY_INTENT, "state")
+        startActivity(intent)
+    }
+
+    private fun startCountrySearch() {
+        val intent = Intent(this@MainActivity, SearchHandle::class.java)
+        intent.putParcelableArrayListExtra(
+            values.COUNTRY_VAL,
+            rootList as ArrayList<out Parcelable?>?
+        )
+        intent.putExtra(values.COUNTRY_INTENT, "country")
+        startActivity(intent)
+    }
+
+    override fun onRefresh() {
+        if (country) setCountries() else startIndianState()
+        Handler().postDelayed({ layout!!.isRefreshing = false }, 500)
+    }
+
+    private fun makeAlert() {
+        val themeView = layoutInflater.inflate(R.layout.theme_choice, null)
+        val dark = themeView.findViewById<RadioButton>(R.id.dark_theme)
+        val light = themeView.findViewById<RadioButton>(R.id.light_theme)
+        val defaultTheme = themeView.findViewById<RadioButton>(R.id.default_theme)
+        if (themeStatus == values.LIGHT) light.isChecked = true
+        if (themeStatus == values.DARK) dark.isChecked = true else defaultTheme.isChecked = true
+        setContentView(R.layout.activity_main)
+        val dialog = AlertDialog.Builder(this)
+            .setView(themeView)
+            .setTitle("Select Theme")
+            .setCancelable(false)
+            .setPositiveButton("OK") { dialog1, which ->
+                themeStatus =
+                    if (light.isChecked) values.LIGHT else if (dark.isChecked) values.DARK else values.DEFAULT
+            }
+            .create()
+        dialog.show()
+    }
+
+    var themeStatus: String?
+        get() {
+            val sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            return sharedPreferences.getString(values.NEW_KEY, values.LIGHT)
+        }
+        set(mode) {
+            val sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            val editor = sharedPreferences.edit()
+            editor.putString(values.NEW_KEY, mode)
+            editor.apply()
+            finish()
+            startActivity(intent)
+        }
+
+    companion object {
+        const val TAGO = "hello sir"
     }
 }

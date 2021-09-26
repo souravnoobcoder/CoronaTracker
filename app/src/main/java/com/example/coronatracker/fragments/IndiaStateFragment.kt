@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.coronatracker.activities.MainActivity
-import com.example.coronatracker.Adapters.stateAdapter
+import com.example.coronatracker.adapters.StateAdapter
 import com.example.coronatracker.R
 import com.example.coronatracker.dataClasses.indiaModel.Regional
 import com.example.coronatracker.room.indiaStateModel
@@ -22,12 +22,12 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.util.*
 
-class indiaStateFragment : Fragment() {
+class IndiaStateFragment : Fragment() {
     var myModel: viewModel? = null
     var states: List<Regional>? = null
     private var contacts: MutableList<com.example.coronatracker.dataClasses.indiaContactModel.Regional>? =
         null
-    var adapter: stateAdapter? = null
+    var adapter: StateAdapter? = null
     var data: List<indiaStateModel>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,12 +62,12 @@ class indiaStateFragment : Fragment() {
         Handler().post {
             data = createData()
             if (data!!.isNotEmpty()) {
-                adapter = stateAdapter(data)
+                adapter = StateAdapter(data)
                 recyclerView.adapter = adapter
                 setRoom()
             } else {
                 myModel!!.offlineData!!.observeForever { indiaStateModels: List<indiaStateModel?>? ->
-                    adapter = stateAdapter(indiaStateModels)
+                    adapter = StateAdapter(indiaStateModels as List<indiaStateModel>?)
                     recyclerView.adapter = adapter
                 }
                 println(MainActivity.TAGO + "data size is zero")
