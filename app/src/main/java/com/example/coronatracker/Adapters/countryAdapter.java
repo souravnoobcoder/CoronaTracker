@@ -16,8 +16,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.coronatracker.DataClasses.CountryInfo;
-import com.example.coronatracker.DataClasses.Root;
+import com.example.coronatracker.dataClasses.CountryInfo;
+import com.example.coronatracker.dataClasses.Root;
 import com.example.coronatracker.R;
 import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;

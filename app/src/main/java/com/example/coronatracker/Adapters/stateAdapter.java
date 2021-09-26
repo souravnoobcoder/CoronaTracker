@@ -15,7 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.coronatracker.Room.indiaStateModel;
+import com.example.coronatracker.room.indiaStateModel;
 import com.example.coronatracker.R;
 import com.google.android.material.card.MaterialCardView;
 

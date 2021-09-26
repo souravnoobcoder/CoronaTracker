@@ -336,7 +336,7 @@
                     android:id="@+id/total_population"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Total Population"
+                    android:text="@string/population"
                     android:textColor="#000"
                     android:textSize="14sp" />
             </LinearLayout>

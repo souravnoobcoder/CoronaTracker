@@ -2,7 +2,7 @@ package com.example.coronatracker.Api;
 
 import androidx.annotation.NonNull;
 
-import com.example.coronatracker.Funtions.MyApplication;
+import com.example.coronatracker.funtions.MyApplication;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,15 +22,10 @@ public class newApi {
 
 
     private static final long cacheSize = (1024 * 1024);        // 1 MB
-    private static newApi instance;
     public static final String HEADER_CACHE_CONTROL = "Cache-Control";
     public static final String HEADER_PRAGMA = "Pragma";
-    public static newApi getInstance(){
-        if(instance == null){
-            instance = new newApi();
-        }
-        return instance;
-    }
+    private static final File CACHE_DIR=MyApplication.getInstance().getCacheDir();
+
     private static OkHttpClient okHttpClient(){
         return new OkHttpClient.Builder()
                 .cache(cache())
@@ -56,13 +51,13 @@ public class newApi {
                 .build();
     }
     private static Cache cache(){
-        return new Cache(new File(MyApplication.getInstance().getCacheDir(),"someIdentifier"), cacheSize);
+        return new Cache(new File(CACHE_DIR,"someIdentifier"), cacheSize);
     }
     private static Cache cacheCountry(){
-        return new Cache(new File(MyApplication.getInstance().getCacheDir(),"country"), cacheSize);
+        return new Cache(new File(CACHE_DIR,"country"), cacheSize);
     }
     private static Cache cacheState(){
-        return new Cache(new File(MyApplication.getInstance().getCacheDir(),"state"), cacheSize);
+        return new Cache(new File(CACHE_DIR,"state"), cacheSize);
     }
     /**
      * This interceptor will be called both if the network is available and if the network is not available
@@ -112,7 +107,7 @@ public class newApi {
                 Response response = chain.proceed(chain.request());
 
                 CacheControl cacheControl = new CacheControl.Builder()
-                        .maxAge(3, TimeUnit.MINUTES)
+                        .maxAge(10, TimeUnit.MINUTES)
                         .build();
 
                 return response.newBuilder()

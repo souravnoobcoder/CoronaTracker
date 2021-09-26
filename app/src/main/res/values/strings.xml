@@ -20,4 +20,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_compose">compose</string>
     <string name="view_more">View more</string>
+    <string name="population">Population</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="recovered">Recovered</string>
 </resources>

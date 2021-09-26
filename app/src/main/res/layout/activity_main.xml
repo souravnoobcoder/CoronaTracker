@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     tools:appDrawers="start"
-    tools:context=".Activities.MainActivity"
+    tools:context=".activities.MainActivity"
     android:id="@+id/drawer_Layout"
     android:theme="@style/night"
     xmlns:android="http://schemas.android.com/apk/res/android"
