@@ -7,16 +7,16 @@ import com.example.coronatracker.dataClasses.indiaContactModel.stateContacts
 import com.example.coronatracker.dataClasses.indiaModel.indiaStates
 import retrofit2.Call
 
-interface methods {
-    @get:GET("covid-19/countries")
-    val data: Call<List<Root?>>
+interface Methods {
+    @GET("covid-19/countries")
+    fun getData() : Call<List<Root?>>
 
-    @get:GET("all?yesterday")
-    val world: Call<world?>?
+    @GET("all?yesterday")
+    fun getWorld(): Call<world?>?
 
-    @get:GET("covid19-in/contacts")
-    val contacts: Call<stateContacts?>?
+    @GET("covid19-in/contacts")
+    fun getContacts(): Call<stateContacts?>?
 
-    @get:GET("covid19-in/stats/latest")
-    val states: Call<indiaStates?>?
+    @GET("covid19-in/stats/latest")
+    fun getStates(): Call<indiaStates?>?
 }

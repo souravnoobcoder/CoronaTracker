@@ -24,7 +24,7 @@ import java.util.ArrayList
 class SearchHandle : AppCompatActivity() {
     var inputEditText: TextInputEditText? = null
     var know: String? = null
-    val model: viewModel= ViewModelProviders.of(this).get(viewModel::class.java)
+    private var model: viewModel?=null
     private var fullSearchingList: List<Root>? = null
     private var fullSearchingListState: List<indiaStateModel?>? = null
     var adapter: CountryAdapter? = null
@@ -36,6 +36,7 @@ class SearchHandle : AppCompatActivity() {
         fullSearchingListState = ArrayList()
         fullSearchingList = ArrayList()
         inputEditText = findViewById(R.id.search_bar)
+        model= ViewModelProviders.of(this@SearchHandle).get(viewModel::class.java)
         val recyclerView = findViewById<RecyclerView>(R.id.searched_countries)
         recyclerView.layoutManager = LinearLayoutManager(this)
         know = intent.getStringExtra(values.COUNTRY_INTENT)
@@ -96,7 +97,7 @@ class SearchHandle : AppCompatActivity() {
 
     private fun setStateList() {
         CoroutineScope(IO).launch {
-           fullSearchingListState= model.getOfflineDataB()
+           fullSearchingListState= model?.getOfflineDataB()
         }
     }
 }

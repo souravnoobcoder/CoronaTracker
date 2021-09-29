@@ -19,7 +19,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.coronatracker.activities.MainActivity
-import com.example.coronatracker.api.methods
+import com.example.coronatracker.api.Methods
 import com.example.coronatracker.api.NewsApi
 import com.example.coronatracker.dataClasses.Root
 import com.example.coronatracker.R
@@ -30,6 +30,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.random.Random
 
 
 class WorkManagerForNotifying(val context: Context, workerParameters: WorkerParameters) :
@@ -57,17 +58,17 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            AlertDialog.Builder(context)
-                .setTitle("Location Permission Needed")
-                .setMessage("This app needs the Location permission, please accept to use location functionality")
-                .setPositiveButton(
-                    "OK"
-                ) { _, _ ->
-                    //Prompt the user once explanation has been shown
-                    requestLocationPermission()
-                }
-                .create()
-                .show()
+//            AlertDialog.Builder(context)
+//                .setTitle("Location Permission Needed")
+//                .setMessage("This app needs the Location permission, please accept to use location functionality")
+//                .setPositiveButton(
+//                    "OK"
+//                ) { _, _ ->
+//                    //Prompt the user once explanation has been shown
+//                    requestLocationPermission()
+//                }
+//                .create()
+//                .show()
             return
         }
         fusedLocationProvider.lastLocation
@@ -86,9 +87,9 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
 
 
         print("work manager is calles")
-        val method = NewsApi.apiInstance?.create(methods::class.java)
+        val method = NewsApi.apiInstance?.create(Methods::class.java)
 
-        method?.data?.enqueue(object : Callback<List<Root?>> {
+        method?.getData()?.enqueue(object : Callback<List<Root?>> {
 
             override fun onResponse(call: Call<List<Root?>>, response: Response<List<Root?>>) {
                 print("work manager is called")
@@ -104,7 +105,7 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
                 collapsedNotify.setTextViewText(R.id.confirmedCaseText,listOfRoot[0].cases.toString())
                 collapsedNotify.setTextViewText(R.id.deathsText,listOfRoot[0].deaths.toString())
 
-                val myNotification =
+                val notificationBuilder =
                     NotificationCompat.Builder(context, MyApplication.CHANNEL_ID)
                         .setContentTitle(listOfRoot[0].country)
                         .setContentText(listOfRoot[0].active.toString()+"\n\nkdjd"+"\n\nkdjd"+"\n\nkdjd")
@@ -115,7 +116,7 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
                         .setContentIntent(pendingIntent)
                 with(NotificationManagerCompat.from(context))
                 {
-                    notify(1000, myNotification.build())
+                    notify(Random.nextInt(), notificationBuilder.build())
                 }
             }
 

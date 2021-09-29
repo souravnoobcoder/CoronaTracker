@@ -14,7 +14,7 @@ import android.os.Bundle
 import com.example.coronatracker.dataClasses.values
 import com.example.coronatracker.R
 import com.example.coronatracker.R.string
-import com.example.coronatracker.api.methods
+import com.example.coronatracker.api.Methods
 import com.example.coronatracker.api.NewsApi
 import com.example.coronatracker.dataClasses.world
 import android.widget.Toast
@@ -99,8 +99,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawer?.addDrawerListener(toggle)
         toggle.syncState()
-        val worldM = NewsApi.world?.create(methods::class.java)
-            worldM?.world?.enqueue(object : Callback<world?> {
+        val worldM = NewsApi.world?.create(Methods::class.java)
+            worldM?.getWorld()?.enqueue(object : Callback<world?> {
                 override fun onResponse(call: Call<world?>, response: Response<world?>) {
                     val w = response.body()!!
                     setWorld(
@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 R.anim.exit_to_left
             ) // enter    exit   pop enter pop exit
             .replace(R.id.recycle_fragment_view, countriesData::class.java, args)
-            .commit()
+            .commitAllowingStateLoss()
     }
 
     fun setStateFragment(
@@ -267,39 +267,40 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun startIndianState() {
-        val myMethod = NewsApi.indiaState?.create(methods::class.java)
-        val mySecondMethod = NewsApi.indiaState?.create(methods::class.java)
+        val myMethod = NewsApi.indiaState?.create(Methods::class.java)
         if (myMethod != null) {
-            myMethod.contacts?.enqueue(object : Callback<stateContacts?> {
+            myMethod.getContacts()?.enqueue(object : Callback<stateContacts?> {
                 override fun onResponse(
                     call: Call<stateContacts?>,
                     response: Response<stateContacts?>
                 ) {
                     assert(response.body() != null)
                     contacts = response.body()!!.data.contacts.regional
+
                 }
 
                 override fun onFailure(call: Call<stateContacts?>, t: Throwable) {
                     makeToast("Failed to Get States Contacts")
                 }
             })
-        }
-        mySecondMethod?.states?.enqueue(object : Callback<indiaStates?> {
-            override fun onResponse(call: Call<indiaStates?>, response: Response<indiaStates?>) {
-                assert(response.body() != null)
-                states = response.body()!!.data.regional
-                setStateFragment(states, contacts)
-            }
+            myMethod.getStates()?.enqueue(object : Callback<indiaStates?> {
+                override fun onResponse(call: Call<indiaStates?>, response: Response<indiaStates?>) {
+                    assert(response.body() != null)
+                    states = response.body()!!.data.regional
+                    setStateFragment(states, contacts)
+                }
 
-            override fun onFailure(call: Call<indiaStates?>, t: Throwable) {
-                makeToast("Failed to Get States")
-            }
-        })
+                override fun onFailure(call: Call<indiaStates?>, t: Throwable) {
+                    makeToast("Failed to Get States")
+                }
+            })
+        }
+
     }
 
     private fun setCountries() {
-        val method = NewsApi.apiInstance?.create(methods::class.java)
-        method?.data?.enqueue(object : Callback<List<Root?>?> {
+        val method = NewsApi.apiInstance?.create(Methods::class.java)
+        method?.getData()?.enqueue(object : Callback<List<Root?>?> {
             override fun onResponse(call: Call<List<Root?>?>, response: Response<List<Root?>?>) {
                 assert(response.body() != null)
                 setCountryFragment(response.body())

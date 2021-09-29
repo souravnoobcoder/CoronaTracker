@@ -48,7 +48,7 @@ class StateAdapter(var stateModelList: List<indiaStateModel>?) :
         foreignConfirmed.text = model.confirmedCasesForeign.toString()
         activeCases.text = model.activeCases.toString()
         Handler().post {
-            box.setOnClickListener { v: View? ->
+            box.setOnClickListener {
                 if (expanded) {
                     TransitionManager.beginDelayedTransition(box, AutoTransition())
                     moreDataLayout.visibility = View.GONE

@@ -3,7 +3,7 @@ package com.example.coronatracker.dataClasses.indiaContactModel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Regional implements Parcelable,Comparable<Regional> {
+public class Regional implements Parcelable {
     public String loc;
     public String number;
 
@@ -36,7 +36,10 @@ public class Regional implements Parcelable,Comparable<Regional> {
     }
 
     @Override
-    public int compareTo(Regional o) {
-        return 0;
+    public String toString() {
+        return "Regional{" +
+                "loc='" + loc + '\'' +
+                ", number='" + number + '\'' +
+                '}';
     }
 }

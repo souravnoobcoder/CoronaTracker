@@ -18,14 +18,18 @@ import com.example.coronatracker.dataClasses.indiaModel.Regional
 import com.example.coronatracker.room.indiaStateModel
 import com.example.coronatracker.room.viewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.math.log
 
 class IndiaStateFragment : Fragment() {
     var myModel: viewModel? = null
-    var states: List<Regional>? = null
-    private var contacts: MutableList<com.example.coronatracker.dataClasses.indiaContactModel.Regional>? =
+    var states: ArrayList<Regional>? = null
+    private var contacts: ArrayList<com.example.coronatracker.dataClasses.indiaContactModel.Regional>? =
         null
     var adapter: StateAdapter? = null
     var data: List<indiaStateModel>? = null
@@ -53,27 +57,32 @@ class IndiaStateFragment : Fragment() {
             println(MainActivity.TAGO + "arguments are zero")
             Log.v(MainActivity.TAGO, "arguments are zero")
         }
+        Log.v(MainActivity.TAGO," states ${states?.size}")
+        Log.v(MainActivity.TAGO," contacts ${contacts?.size}")
         if (states == null || states!!.isEmpty() || contacts == null || contacts!!.isEmpty()) {
             println(MainActivity.TAGO + "states or contacts is null")
             Log.v(MainActivity.TAGO, "states or contacts is null")
         }
         val recyclerView: RecyclerView = requireView().findViewById(R.id.stateRecycle)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        Handler().post {
+        CoroutineScope(Default).launch {
             data = createData()
-            if (data!!.isNotEmpty()) {
-                adapter = StateAdapter(data)
-                recyclerView.adapter = adapter
-                setRoom()
-            } else {
-                myModel!!.offlineData!!.observeForever { indiaStateModels: List<indiaStateModel?>? ->
-                    adapter = StateAdapter(indiaStateModels as List<indiaStateModel>?)
+            CoroutineScope(Main).launch {
+                if (data!!.isNotEmpty()) {
+                    adapter = StateAdapter(data)
                     recyclerView.adapter = adapter
+                    setRoom()
+                } else {
+                    myModel!!.offlineData!!.observeForever { indiaStateModels: List<indiaStateModel?>? ->
+                        adapter = StateAdapter(indiaStateModels as List<indiaStateModel>?)
+                        recyclerView.adapter = adapter
+                    }
+                    println(MainActivity.TAGO + "data size is zero")
+                    Log.v(MainActivity.TAGO, "data size is zero")
                 }
-                println(MainActivity.TAGO + "data size is zero")
-                Log.v(MainActivity.TAGO, "data size is zero")
             }
         }
+
     }
 
     private fun createData(): List<indiaStateModel> {
@@ -83,14 +92,16 @@ class IndiaStateFragment : Fragment() {
                 println(MainActivity.TAGO + "value inside")
                 Log.v(MainActivity.TAGO, "value inside")
             }
-            for (i in states!!.indices) {
+            var i = 0
+            while (i < states!!.size) {
                 val state = states!![i]
-                for (j in contacts!!.indices) {
+                var j = 0
+                while (j < contacts!!.size) {
                     val contact = contacts!![j]
                     val stateNameI = state.loc
                     val stateNameJ = contact.loc
                     if (stateNameI == stateNameJ) {
-                        contacts!!.remove(contact)
+                       // contacts!!.remove(contact)
                         val confirmedCasesForeign = state.confirmedCasesForeign
                         val discharged = state.discharged
                         val deaths = state.deaths
@@ -104,10 +115,38 @@ class IndiaStateFragment : Fragment() {
                             )
                         )
                     }
+                    j++
                 }
+                i++
             }
         }
-        if (model.isEmpty()) println("googogogogo") else println("googogogogooooooooooo")
+//            for (i in states!!.indices) {
+//                val state = states!![i]
+//                Log.v(MainActivity.TAGO," $i")
+//                for (j in contacts!!.indices) {
+//                    Log.v(MainActivity.TAGO," $j")
+//                    val contact = contacts!![j]
+//                    val stateNameI = state.loc
+//                    val stateNameJ = contact.loc
+//                    if (stateNameI == stateNameJ) {
+//                        contacts!!.remove(contact)
+//                        val confirmedCasesForeign = state.confirmedCasesForeign
+//                        val discharged = state.discharged
+//                        val deaths = state.deaths
+//                        val totalConfirmed = state.totalConfirmed
+//                        val number = contact.number
+//                        val active = totalConfirmed - (deaths + discharged)
+//                        model.add(
+//                            indiaStateModel(
+//                                stateNameI, confirmedCasesForeign, discharged, deaths,
+//                                totalConfirmed, number, active
+//                            )
+//                        )
+//                    }
+//                }
+//            }
+//        }
+        if (model.isEmpty()) println("empty") else println("not empty")
         return model
     }
 

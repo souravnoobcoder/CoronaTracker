@@ -14,7 +14,7 @@ import com.example.coronatracker.dataClasses.Root
 import java.util.ArrayList
 
 class countriesData : Fragment() {
-    var DATA: ArrayList<Root>? = null
+    private var DATA: ArrayList<Root>? = null
     var adapter: CountryAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

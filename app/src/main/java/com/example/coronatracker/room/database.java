@@ -8,7 +8,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 @Database(entities = {indiaStateModel.class,CountryRecent.class,StateRecent.class},
-        version = 1, exportSchema = false)
+        version = 2, exportSchema = false)
 public abstract class database extends RoomDatabase {
     public static database INSTANCE;
 

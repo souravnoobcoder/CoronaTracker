@@ -1,16 +1,14 @@
 package com.example.coronatracker.funtions
 
 import android.app.Application
-import com.example.coronatracker.funtions.MyApplication
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import android.os.Build
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.net.ConnectivityManager
+import android.os.Build
 import androidx.work.PeriodicWorkRequest
-import com.example.coronatracker.funtions.WorkManagerForNotifying
 import androidx.work.WorkManager
+import com.example.coronatracker.funtions.WorkManagerForNotifying
 import java.util.concurrent.TimeUnit
 
 class MyApplication : Application() {
@@ -60,7 +58,7 @@ class MyApplication : Application() {
             WorkManagerForNotifying::class.java, 10, TimeUnit.MINUTES
         )
             .build()
-        WorkManager.getInstance(this).enqueue(periodicWorkRequest)
+        WorkManager.getInstance(this@MyApplication).enqueue(periodicWorkRequest)
     }
 
     companion object {
