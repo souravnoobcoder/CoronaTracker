@@ -2,7 +2,6 @@ package com.example.coronatracker.fragments
 
 import com.example.coronatracker.adapters.CountryAdapter
 import android.os.Bundle
-import com.example.coronatracker.fragments.countriesData
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coronatracker.dataClasses.Root
 import java.util.ArrayList
 
-class countriesData : Fragment() {
+class CountryData : Fragment() {
     private var DATA: ArrayList<Root>? = null
-    var adapter: CountryAdapter? = null
+    private var adapter: CountryAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {

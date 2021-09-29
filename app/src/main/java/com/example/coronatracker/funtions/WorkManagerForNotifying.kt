@@ -3,7 +3,6 @@ package com.example.coronatracker.funtions
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent

@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 
 
-class viewModel(application: Application) : AndroidViewModel(application) {
+class ViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: Repo = Repo(application)
     val offlineData: LiveData<List<indiaStateModel?>?>? = repository.offlineData
 

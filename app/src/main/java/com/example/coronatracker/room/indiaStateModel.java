@@ -7,7 +7,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "offlineContacts", primaryKeys = {})
+@Entity(tableName = "offlineContacts")
 public class indiaStateModel implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private int key;

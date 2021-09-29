@@ -1,10 +1,9 @@
 package com.example.coronatracker.adapters
 
-import android.os.Handler
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.coronatracker.adapters.CountryAdapter.viewHold
+import com.example.coronatracker.adapters.CountryAdapter.ViewHold
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +15,12 @@ import com.squareup.picasso.Picasso
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import com.example.coronatracker.dataClasses.Root
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 
-class CountryAdapter(var list: List<Root>?) : RecyclerView.Adapter<viewHold>() {
-    var expanded = false
+class CountryAdapter(var list: List<Root>?) : RecyclerView.Adapter<ViewHold>() {
+    private var expanded = false
     fun update(updatedRootList: List<Root>?) {
         list = updatedRootList
         notifyDataSetChanged()
@@ -248,13 +250,13 @@ class CountryAdapter(var list: List<Root>?) : RecyclerView.Adapter<viewHold>() {
         "Wallis and Futuna"
     )
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHold {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHold {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.corona_list_item, parent, false)
-        return viewHold(view)
+        return ViewHold(view)
     }
 
-    override fun onBindViewHolder(holder: viewHold, position: Int) {
+    override fun onBindViewHolder(holder: ViewHold, position: Int) {
         val data = list!![position]
         val country = holder.country
         val totalPopulation = holder.totalPopulation
@@ -284,21 +286,21 @@ class CountryAdapter(var list: List<Root>?) : RecyclerView.Adapter<viewHold>() {
         deathsPerMillion.text = data.deathsPerOneMillion.toString()
         val info = data.countryInfo
         if (info != null) Picasso.get().load(info.flag).noFade().resize(50, 22).into(countryFlag)
-        Handler().post {
-            box.setOnClickListener {
-                if (expanded) {
-                    TransitionManager.beginDelayedTransition(box, AutoTransition())
-                    moreDataLayout.visibility = View.GONE
-                    viewMore.visibility = View.VISIBLE
-                    expanded = false
-                } else {
-                    TransitionManager.beginDelayedTransition(box, AutoTransition())
-                    viewMore.visibility = View.GONE
-                    moreDataLayout.visibility = View.VISIBLE
-                    expanded = true
-                }
-            }
-        }
+       CoroutineScope(Main).launch {
+           box.setOnClickListener {
+               if (expanded) {
+                   TransitionManager.beginDelayedTransition(box, AutoTransition())
+                   moreDataLayout.visibility = View.GONE
+                   viewMore.visibility = View.VISIBLE
+                   expanded = false
+               } else {
+                   TransitionManager.beginDelayedTransition(box, AutoTransition())
+                   viewMore.visibility = View.GONE
+                   moreDataLayout.visibility = View.VISIBLE
+                   expanded = true
+               }
+           }
+       }
         setLeftAnimation(holder.itemView, position)
     }
 
@@ -306,7 +308,7 @@ class CountryAdapter(var list: List<Root>?) : RecyclerView.Adapter<viewHold>() {
         return if (list == null) 0 else list!!.size
     }
 
-    inner class viewHold(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHold(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var country: TextView = itemView.findViewById(R.id.locationNameTextView)
         var totalPopulation: TextView = itemView.findViewById(R.id.total_populationNumber)
         var confirmed: TextView = itemView.findViewById(R.id.confirmedCaseTextView)

@@ -107,7 +107,7 @@ object NewsApi {
     }
 
     private fun httpLoggingInterceptor(): HttpLoggingInterceptor {
-        val httpLoggingInterceptor = HttpLoggingInterceptor { message: String? -> }
+        val httpLoggingInterceptor = HttpLoggingInterceptor { }
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return httpLoggingInterceptor
     }

@@ -15,38 +15,38 @@ import com.example.coronatracker.dataClasses.values
 import android.text.Editable
 import androidx.lifecycle.ViewModelProviders
 import com.example.coronatracker.dataClasses.Root
-import com.example.coronatracker.room.viewModel
+import com.example.coronatracker.room.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+import java.util.*
 
 class SearchHandle : AppCompatActivity() {
-    var inputEditText: TextInputEditText? = null
+    private var inputEditText: TextInputEditText? = null
     var know: String? = null
-    private var model: viewModel?=null
+    private var model: ViewModel?=null
     private var fullSearchingList: List<Root>? = null
     private var fullSearchingListState: List<indiaStateModel?>? = null
     var adapter: CountryAdapter? = null
     var adapterS: StateAdapter? = null
-    var textWatcher: TextWatcher? = null
+    private var textWatcher: TextWatcher? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_handle)
         fullSearchingListState = ArrayList()
         fullSearchingList = ArrayList()
         inputEditText = findViewById(R.id.search_bar)
-        model= ViewModelProviders.of(this@SearchHandle).get(viewModel::class.java)
+        model= ViewModelProviders.of(this@SearchHandle).get(ViewModel::class.java)
         val recyclerView = findViewById<RecyclerView>(R.id.searched_countries)
         recyclerView.layoutManager = LinearLayoutManager(this)
         know = intent.getStringExtra(values.COUNTRY_INTENT)
         if ((know == "country")) {
-            inputEditText?.setHint("Enter Country")
+            inputEditText?.hint = "Enter Country"
             adapter = CountryAdapter(null)
             fullSearchingList = intent.getParcelableArrayListExtra(values.COUNTRY_VAL)
             recyclerView.adapter = adapter
         } else {
-            inputEditText?.setHint("Enter state")
+            inputEditText?.hint = "Enter state"
             adapterS = StateAdapter(null)
             recyclerView.adapter = adapterS
             setStateList()
@@ -61,9 +61,10 @@ class SearchHandle : AppCompatActivity() {
             override fun afterTextChanged(s: Editable) {
                 if ((know == "country")) adapter!!.update(
                     sorting(
-                        s.toString().toLowerCase()
+                        s.toString().lowercase(Locale.getDefault())
                     )
-                ) else adapterS!!.update(sortingOfState(s.toString().toLowerCase()) as List<indiaStateModel>)
+                ) else adapterS!!.update(sortingOfState(s.toString().lowercase(Locale.getDefault()))
+                        as List<indiaStateModel>)
             }
         }
         inputEditText!!.addTextChangedListener(textWatcher)
@@ -78,7 +79,8 @@ class SearchHandle : AppCompatActivity() {
     fun sorting(searched: String?): List<Root> {
         val searchingSortedList: MutableList<Root> = ArrayList()
         for (root: Root in fullSearchingList!!) {
-            if (root.country.toLowerCase().contains((searched)!!)) searchingSortedList.add(root)
+            if (root.country.lowercase(Locale.getDefault()).contains((searched)!!))
+                searchingSortedList.add(root)
         }
         return searchingSortedList
     }
@@ -86,7 +88,7 @@ class SearchHandle : AppCompatActivity() {
     fun sortingOfState(searched: String?): List<indiaStateModel?> {
         val sortedList: MutableList<indiaStateModel?> = ArrayList()
         for (i in fullSearchingListState!!.indices) {
-            if (fullSearchingListState!![i]!!.loc.toLowerCase()
+            if (fullSearchingListState!![i]!!.loc.lowercase(Locale.getDefault())
                     .contains((searched)!!)
             ) sortedList.add(
                 fullSearchingListState!![i]

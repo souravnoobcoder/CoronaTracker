@@ -1,6 +1,5 @@
 package com.example.coronatracker.adapters
 
-import android.os.Handler
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import com.example.coronatracker.room.indiaStateModel
@@ -14,10 +13,13 @@ import android.widget.TextView
 import android.widget.LinearLayout
 import com.google.android.material.card.MaterialCardView
 import android.view.animation.AnimationUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 
-class StateAdapter(var stateModelList: List<indiaStateModel>?) :
+class StateAdapter(private var stateModelList: List<indiaStateModel>?) :
     RecyclerView.Adapter<ViewHolder>() {
-    var expanded = false
+    private var expanded = false
     fun update(stateModelList: List<indiaStateModel>) {
         this.stateModelList = stateModelList
         notifyDataSetChanged()
@@ -47,21 +49,23 @@ class StateAdapter(var stateModelList: List<indiaStateModel>?) :
         deaths.text = model.deaths.toString()
         foreignConfirmed.text = model.confirmedCasesForeign.toString()
         activeCases.text = model.activeCases.toString()
-        Handler().post {
-            box.setOnClickListener {
-                if (expanded) {
-                    TransitionManager.beginDelayedTransition(box, AutoTransition())
-                    moreDataLayout.visibility = View.GONE
-                    viewMore.visibility = View.VISIBLE
-                    expanded = false
-                } else {
-                    TransitionManager.beginDelayedTransition(box, AutoTransition())
-                    viewMore.visibility = View.GONE
-                    moreDataLayout.visibility = View.VISIBLE
-                    expanded = true
-                }
-            }
-        }
+       CoroutineScope(Main).launch {
+           box.setOnClickListener {
+               if (expanded) {
+                   TransitionManager.beginDelayedTransition(box, AutoTransition())
+                   moreDataLayout.visibility = View.GONE
+                   viewMore.visibility = View.VISIBLE
+                   expanded = false
+               } else {
+                   TransitionManager.beginDelayedTransition(box, AutoTransition())
+                   viewMore.visibility = View.GONE
+                   moreDataLayout.visibility = View.VISIBLE
+                   expanded = true
+               }
+           }
+       }
+
+
         setLeftAnimation(holder.itemView, position)
     }
 

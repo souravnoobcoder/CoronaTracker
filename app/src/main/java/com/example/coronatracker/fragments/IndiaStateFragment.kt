@@ -2,7 +2,6 @@ package com.example.coronatracker.fragments
 
 
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,31 +10,28 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.coronatracker.R
 import com.example.coronatracker.activities.MainActivity
 import com.example.coronatracker.adapters.StateAdapter
-import com.example.coronatracker.R
 import com.example.coronatracker.dataClasses.indiaModel.Regional
 import com.example.coronatracker.room.indiaStateModel
-import com.example.coronatracker.room.viewModel
+import com.example.coronatracker.room.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.math.log
 
 class IndiaStateFragment : Fragment() {
-    var myModel: viewModel? = null
-    var states: ArrayList<Regional>? = null
+    private var myModel: ViewModel? = null
+    private var states: ArrayList<Regional>? = null
     private var contacts: ArrayList<com.example.coronatracker.dataClasses.indiaContactModel.Regional>? =
         null
-    var adapter: StateAdapter? = null
+    private var adapter: StateAdapter? = null
     var data: List<indiaStateModel>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        myModel = ViewModelProviders.of(requireActivity()).get(viewModel::class.java)
+        myModel = ViewModelProviders.of(requireActivity()).get(ViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -150,7 +146,6 @@ class IndiaStateFragment : Fragment() {
         return model
     }
 
-    fun sortArray() {}
     private fun setRoom() {
         CoroutineScope(IO).launch {
             myModel!!.deleteAll()

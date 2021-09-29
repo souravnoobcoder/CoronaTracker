@@ -20,7 +20,7 @@ import com.example.coronatracker.dataClasses.world
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import android.os.Looper
-import com.example.coronatracker.fragments.countriesData
+import com.example.coronatracker.fragments.CountryData
 import android.os.Parcelable
 import com.example.coronatracker.fragments.IndiaStateFragment
 import com.example.coronatracker.fragments.Launching
@@ -47,30 +47,30 @@ import java.util.ArrayList
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     Toolbar.OnMenuItemClickListener, OnRefreshListener {
-    var expanded = false
-    var pressedOnce = false
+    private var expanded = false
+    private var pressedOnce = false
     var country = true
-    var stateLaunched = false
-    var totalPopulation: TextView? = null
+    private var stateLaunched = false
+    private var totalPopulation: TextView? = null
     var confirmed: TextView? = null
     var recovered: TextView? = null
     var deaths: TextView? = null
-    var casesToday: TextView? = null
-    var activeCases: TextView? = null
-    var deathsToday: TextView? = null
-    var criticalCases: TextView? = null
-    var casesPerMillion: TextView? = null
-    var deathsPerMillion: TextView? = null
-    var viewMore: TextView? = null
+    private var casesToday: TextView? = null
+    private var activeCases: TextView? = null
+    private var deathsToday: TextView? = null
+    private var criticalCases: TextView? = null
+    private var casesPerMillion: TextView? = null
+    private var deathsPerMillion: TextView? = null
+    private var viewMore: TextView? = null
     var rootList: List<Root?>? = null
     var states: List<Regional?>? = null
     var contacts: List<com.example.coronatracker.dataClasses.indiaContactModel.Regional?>? = null
-    var bottomNavigationView: BottomNavigationView? = null
-    var box: AppBarLayout? = null
+    private var bottomNavigationView: BottomNavigationView? = null
+    private var box: AppBarLayout? = null
     var layout: SwipeRefreshLayout? = null
-    var moreDataLayout: LinearLayout? = null
-    var drawer: DrawerLayout? = null
-    var fragmentContainerView: FragmentContainerView? = null
+    private var moreDataLayout: LinearLayout? = null
+    private var drawer: DrawerLayout? = null
+    private var fragmentContainerView: FragmentContainerView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val theme = themeStatus
@@ -217,13 +217,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun setCountryFragment(root: List<Root?>?) {
         val args = Bundle()
-        args.putParcelableArrayList(countriesData.ARG_PARAM1, root as ArrayList<out Parcelable?>?)
+        args.putParcelableArrayList(CountryData.ARG_PARAM1, root as ArrayList<out Parcelable?>?)
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.enter_from_left,
                 R.anim.exit_to_left
             ) // enter    exit   pop enter pop exit
-            .replace(R.id.recycle_fragment_view, countriesData::class.java, args)
+            .replace(R.id.recycle_fragment_view, CountryData::class.java, args)
             .commitAllowingStateLoss()
     }
 
@@ -366,7 +366,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dialog.show()
     }
 
-    var themeStatus: String?
+    private var themeStatus: String?
         get() {
             val sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(applicationContext)

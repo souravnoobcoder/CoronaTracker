@@ -8,7 +8,6 @@ import android.net.ConnectivityManager
 import android.os.Build
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import com.example.coronatracker.funtions.WorkManagerForNotifying
 import java.util.concurrent.TimeUnit
 
 class MyApplication : Application() {
@@ -63,7 +62,6 @@ class MyApplication : Application() {
 
     companion object {
         const val CHANNEL_ID = "myChannel"
-        const val KEY = "key_for_theme"
 
         // private FusedLocationProviderClient fusedLocationClient;
         private var instance: MyApplication? = null
