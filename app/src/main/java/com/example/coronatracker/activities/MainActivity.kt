@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Handler(Looper.getMainLooper()).postDelayed({ pressedOnce = false }, 2000)
     }
 
-    fun toolClick() {
+    fun toolClick(view: View) {
         if (expanded) {
             TransitionManager.beginDelayedTransition(box, AutoTransition())
             moreDataLayout!!.visibility = View.GONE
@@ -255,9 +255,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
-        if (itemId == R.id.search) makeToast("search") else if (itemId == R.id.call) makeToast("call") else if (itemId == R.id.change_theme) makeAlert() else if (itemId == R.id.safety) makeToast(
-            "Safety"
-        ) else if (itemId == R.id.second || itemId == R.id.third) makeToast("progress")
+        if (itemId == R.id.search) makeToast("search")
+        else if (itemId == R.id.call) makeToast("call")
+        else if (itemId == R.id.change_theme) makeAlert()
+        else if (itemId == R.id.safety) makeToast("Safety")
+        else if (itemId == R.id.second || itemId == R.id.third) makeToast("progress")
         drawer!!.closeDrawer(GravityCompat.START)
         return true
     }

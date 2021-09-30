@@ -13,11 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coronatracker.dataClasses.values
 import android.text.Editable
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.coronatracker.adapters.CountryHistoryAdapter
+import com.example.coronatracker.adapters.StateHistoryAdapter
 import com.example.coronatracker.dataClasses.Root
+import com.example.coronatracker.room.CountryRecent
 import com.example.coronatracker.room.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -52,6 +57,26 @@ class SearchHandle : AppCompatActivity() {
             setStateList()
         }
         inputEditText?.isSelected = true
+        val recentRecycle =findViewById<RecyclerView>(R.id.history_recycle)
+        var historyAdapter: StateHistoryAdapter?
+        var historyCountryAdapter: CountryHistoryAdapter? =null
+        recentRecycle.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+        if (know == "country") {
+            model?.getCountryRecent()?.observe(this,
+                { t -> historyCountryAdapter=CountryHistoryAdapter(t!!)
+                    recentRecycle.adapter=historyCountryAdapter
+                })
+        }
+        else {
+            model?.getStateRecent()?.observe(this,
+                { t ->  historyAdapter=StateHistoryAdapter(t!!)
+                    recentRecycle.adapter=historyAdapter})
+        }
+        val country=CountryRecent("kdfkd")
+        CoroutineScope(IO).launch {
+            model?.insertCountry(country)
+        }
+
     }
 
     override fun onStart() {
@@ -102,4 +127,12 @@ class SearchHandle : AppCompatActivity() {
            fullSearchingListState= model?.getOfflineDataB()
         }
     }
+   // private fun insertState(country : String){
+//        CoroutineScope(IO).launch {
+//            CountryAdapter.countries.contains(country)
+//            delay(3000).run {
+//                model?.insertCountry()
+//            }
+//        }
+//    }
 }

@@ -116,32 +116,6 @@ class IndiaStateFragment : Fragment() {
                 i++
             }
         }
-//            for (i in states!!.indices) {
-//                val state = states!![i]
-//                Log.v(MainActivity.TAGO," $i")
-//                for (j in contacts!!.indices) {
-//                    Log.v(MainActivity.TAGO," $j")
-//                    val contact = contacts!![j]
-//                    val stateNameI = state.loc
-//                    val stateNameJ = contact.loc
-//                    if (stateNameI == stateNameJ) {
-//                        contacts!!.remove(contact)
-//                        val confirmedCasesForeign = state.confirmedCasesForeign
-//                        val discharged = state.discharged
-//                        val deaths = state.deaths
-//                        val totalConfirmed = state.totalConfirmed
-//                        val number = contact.number
-//                        val active = totalConfirmed - (deaths + discharged)
-//                        model.add(
-//                            indiaStateModel(
-//                                stateNameI, confirmedCasesForeign, discharged, deaths,
-//                                totalConfirmed, number, active
-//                            )
-//                        )
-//                    }
-//                }
-//            }
-//        }
         if (model.isEmpty()) println("empty") else println("not empty")
         return model
     }

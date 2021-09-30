@@ -3,6 +3,7 @@ package com.example.coronatracker.room
 import androidx.room.Dao
 import androidx.lifecycle.LiveData
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 
 @Dao
@@ -19,13 +20,13 @@ interface ContactDao {
     @Query("SELECT * FROM offlineContacts")
     suspend fun getOfflineDataB() : List<indiaStateModel>
 
-    @Insert
+    @Insert(onConflict=REPLACE)
     suspend fun insertCountry(country: CountryRecent)
 
     @Query("SELECT * FROM countryRecent")
     fun getRecentCountry() :LiveData<List<CountryRecent>>
 
-    @Insert
+    @Insert(onConflict=REPLACE)
     suspend fun insertState(country: StateRecent)
 
     @Query("SELECT * FROM stateRecent")
