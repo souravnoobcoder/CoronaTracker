@@ -12,6 +12,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Build
 import android.widget.RemoteViews
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -24,6 +25,9 @@ import com.example.coronatracker.dataClasses.Root
 import com.example.coronatracker.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,7 +40,6 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
     Worker(context, workerParameters) {
 
   private var TAG="tag"
-    private lateinit var fusedLocationProvider:FusedLocationProviderClient
   val intent=Intent(context.applicationContext,MainActivity::class.java)
     val pendingIntent:PendingIntent= PendingIntent.getActivity(context,0,intent,0)
 
@@ -48,41 +51,7 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
 
 
     private fun getData() {
-        fusedLocationProvider=LocationServices.getFusedLocationProviderClient(context)
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-//            AlertDialog.Builder(context)
-//                .setTitle("Location Permission Needed")
-//                .setMessage("This app needs the Location permission, please accept to use location functionality")
-//                .setPositiveButton(
-//                    "OK"
-//                ) { _, _ ->
-//                    //Prompt the user once explanation has been shown
-//                    requestLocationPermission()
-//                }
-//                .create()
-//                .show()
-            return
-        }
-        fusedLocationProvider.lastLocation
-            .addOnSuccessListener {
-                location : Location->
-                val geocoder=Geocoder(context, Locale.getDefault())
-                val listOfAddress:List<Address> =
-                    geocoder.getFromLocation(location.latitude, location.longitude,1)
-                val address=listOfAddress[0]
-                val country=address.countryName
-                val state= address.adminArea
-                val district=address.extras
-            }
-
-        var listOfRoot: java.util.ArrayList<Root>
+        var listOfRoot: ArrayList<Root>
 
 
         print("work manager is calles")
@@ -118,33 +87,9 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
                     notify(Random.nextInt(), notificationBuilder.build())
                 }
             }
-
             override fun onFailure(call: Call<List<Root?>>, t: Throwable) {
 
             }
         })
-    }
-
-    private fun requestLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                ),
-                MY_PERMISSIONS_REQUEST_LOCATION
-            )
-        } else {
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                MY_PERMISSIONS_REQUEST_LOCATION
-            )
-
-        }
-    }
-    companion object {
-        private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
     }
 }

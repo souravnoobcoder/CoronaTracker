@@ -1,49 +1,50 @@
 package com.example.coronatracker.activities
 
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.navigation.NavigationView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import android.widget.TextView
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.appbar.AppBarLayout
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import android.widget.LinearLayout
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentContainerView
-import android.os.Bundle
-import com.example.coronatracker.dataClasses.values
-import com.example.coronatracker.R
-import com.example.coronatracker.R.string
-import com.example.coronatracker.api.Methods
-import com.example.coronatracker.api.NewsApi
-import com.example.coronatracker.dataClasses.world
-import android.widget.Toast
-import androidx.core.view.GravityCompat
-import android.os.Looper
-import com.example.coronatracker.fragments.CountryData
-import android.os.Parcelable
-import com.example.coronatracker.fragments.IndiaStateFragment
-import com.example.coronatracker.fragments.Launching
-import com.example.coronatracker.dataClasses.indiaContactModel.stateContacts
-import com.example.coronatracker.dataClasses.indiaModel.indiaStates
 import android.content.Intent
-import android.widget.RadioButton
+import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
+import android.os.Looper
+import android.os.Parcelable
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentContainerView
+import androidx.preference.PreferenceManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.example.coronatracker.R
+import com.example.coronatracker.R.string
+import com.example.coronatracker.api.Methods
+import com.example.coronatracker.api.NewsApi
 import com.example.coronatracker.dataClasses.Root
+import com.example.coronatracker.dataClasses.indiaContactModel.stateContacts
 import com.example.coronatracker.dataClasses.indiaModel.Regional
+import com.example.coronatracker.dataClasses.indiaModel.indiaStates
+import com.example.coronatracker.dataClasses.values
+import com.example.coronatracker.dataClasses.world
+import com.example.coronatracker.fragments.CountryData
+import com.example.coronatracker.fragments.IndiaStateFragment
+import com.example.coronatracker.fragments.Launching
+import com.example.coronatracker.funtions.Location
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.ArrayList
+import java.util.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     Toolbar.OnMenuItemClickListener, OnRefreshListener {
@@ -140,6 +141,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             true
         }
         layout!!.setOnRefreshListener(this)
+
+        val location = Location(this@MainActivity)
+        val locationData = location.getLocation()
+        print(" country : ${locationData.country}  state : ${locationData.state}")
+        makeToast(" country : ${locationData.country}  state : ${locationData.state}")
     }
 
     override fun onBackPressed() {
@@ -384,7 +390,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             finish()
             startActivity(intent)
         }
-
     companion object {
         const val TAGO = "hello sir"
     }
