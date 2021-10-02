@@ -269,6 +269,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun startIndianState() {
+        settingStart();
         val myMethod = NewsApi.indiaState?.create(Methods::class.java)
         if (myMethod != null) {
             myMethod.getContacts()?.enqueue(object : Callback<stateContacts?> {
@@ -360,7 +361,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .setView(themeView)
             .setTitle("Select Theme")
             .setCancelable(false)
-            .setPositiveButton("OK") { dialog1, which ->
+            .setPositiveButton("OK") { _, _ ->
                 themeStatus =
                     if (light.isChecked) values.LIGHT else if (dark.isChecked) values.DARK else values.DEFAULT
             }
