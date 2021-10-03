@@ -49,7 +49,6 @@ class StateAdapter(private var stateModelList: List<indiaStateModel>?) :
         deaths.text = model.deaths.toString()
         foreignConfirmed.text = model.confirmedCasesForeign.toString()
         activeCases.text = model.activeCases.toString()
-       CoroutineScope(Main).launch {
            box.setOnClickListener {
                if (expanded) {
                    TransitionManager.beginDelayedTransition(box, AutoTransition())
@@ -62,7 +61,6 @@ class StateAdapter(private var stateModelList: List<indiaStateModel>?) :
                    moreDataLayout.visibility = View.VISIBLE
                    expanded = true
                }
-           }
        }
 
 

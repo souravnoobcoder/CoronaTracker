@@ -4,8 +4,10 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Build
+import androidx.preference.PreferenceManager
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
@@ -17,15 +19,11 @@ class MyApplication : Application() {
             instance = this
         }
         notificationCreator()
+        val sharedPreferences : SharedPreferences=PreferenceManager.getDefaultSharedPreferences(this)
+        val bool: Boolean= sharedPreferences.getBoolean("Bool",false)
         setupWorker()
-        //        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-//        fusedLocationClient.getLastLocation()
-//                .addOnSuccessListener(new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//
-//                    }
-//                })
+        sharedPreferences.edit().putBoolean("Bool",true).apply()
+
     }
 
     private val isNetworkConnected: Boolean
@@ -54,7 +52,7 @@ class MyApplication : Application() {
 
     private fun setupWorker() {
         val periodicWorkRequest = PeriodicWorkRequest.Builder(
-            WorkManagerForNotifying::class.java, 10, TimeUnit.MINUTES
+            WorkManagerForNotifying::class.java, 12, TimeUnit.HOURS
         )
             .build()
         WorkManager.getInstance(this@MyApplication).enqueue(periodicWorkRequest)

@@ -87,5 +87,10 @@ class Location(context: Context){
         private const val COUNTRY="COUNTRY"
         private const val STATE="STATE"
         private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
+        fun getLocation() : LocationData{
+            val sharedPreference= PreferenceManager.getDefaultSharedPreferences(MyApplication.getInstance())
+            return LocationData(sharedPreference.getString(COUNTRY,"USA").toString(),
+                sharedPreference.getString(STATE,"Uttarakhand").toString())
+        }
     }
 }

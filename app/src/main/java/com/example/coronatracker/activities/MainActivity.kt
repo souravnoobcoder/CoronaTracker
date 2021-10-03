@@ -41,6 +41,10 @@ import com.example.coronatracker.funtions.Location
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -187,7 +191,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         casesPerMillion: String,
         deathsPerMillion: String
     ) {
-        Handler().post {
+        CoroutineScope(Main).launch {
             this@MainActivity.totalPopulation!!.text = totalPopulation
             this@MainActivity.confirmed!!.text = confirmed
             this@MainActivity.recovered!!.text = recovered
@@ -352,7 +356,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onRefresh() {
         if (country) setCountries() else startIndianState()
-        Handler().postDelayed({ layout!!.isRefreshing = false }, 500)
+        CoroutineScope(Main).launch {
+            delay(500)
+            layout!!.isRefreshing = false
+        }
     }
 
     private fun makeAlert() {

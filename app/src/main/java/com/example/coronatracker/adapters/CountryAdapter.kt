@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import com.example.coronatracker.dataClasses.Root
+import com.squareup.picasso.NetworkPolicy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
@@ -285,8 +286,9 @@ class CountryAdapter(var list: List<Root>?) : RecyclerView.Adapter<ViewHold>() {
         casesPerMillion.text = data.casesPerOneMillion.toString()
         deathsPerMillion.text = data.deathsPerOneMillion.toString()
         val info = data.countryInfo
-        if (info != null) Picasso.get().load(info.flag).noFade().resize(50, 22).into(countryFlag)
-       CoroutineScope(Main).launch {
+        if (info != null)
+            Picasso.get().load(info.flag).networkPolicy(NetworkPolicy.OFFLINE)
+                .noFade().resize(50, 22).into(countryFlag)
            box.setOnClickListener {
                if (expanded) {
                    TransitionManager.beginDelayedTransition(box, AutoTransition())
@@ -299,7 +301,6 @@ class CountryAdapter(var list: List<Root>?) : RecyclerView.Adapter<ViewHold>() {
                    moreDataLayout.visibility = View.VISIBLE
                    expanded = true
                }
-           }
        }
         setLeftAnimation(holder.itemView, position)
     }
