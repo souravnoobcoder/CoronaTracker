@@ -9,17 +9,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/locationNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:layout_toStartOf="@id/confirmedCasesLayout"
             android:text=""
-            android:layout_alignParentStart="true"
             android:textColor="#000"
             android:textSize="25sp" />
 
@@ -47,14 +48,20 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/country_flag"
+            android:layout_width="50dp"
+            android:layout_height="22dp"
+            android:layout_below="@id/locationNameTextView"
+            android:layout_marginStart="10dp" />
+
         <LinearLayout
             android:id="@+id/recoveredCountLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/locationNameTextView"
+            android:layout_below="@id/country_flag"
             android:layout_alignBottom="@id/deathCasesLayout"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
             android:gravity="bottom"
             android:orientation="vertical">
 

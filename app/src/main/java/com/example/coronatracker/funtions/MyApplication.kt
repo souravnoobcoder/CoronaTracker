@@ -8,8 +8,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Build
 import androidx.preference.PreferenceManager
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import java.util.concurrent.TimeUnit
 
 class MyApplication : Application() {
@@ -21,8 +20,9 @@ class MyApplication : Application() {
         notificationCreator()
         val sharedPreferences : SharedPreferences=PreferenceManager.getDefaultSharedPreferences(this)
         val bool: Boolean= sharedPreferences.getBoolean("Bool",false)
-        setupWorker()
-        sharedPreferences.edit().putBoolean("Bool",true).apply()
+
+            setupWorker()
+            sharedPreferences.edit().putBoolean("Bool",true).apply()
 
     }
 
@@ -51,16 +51,29 @@ class MyApplication : Application() {
     }
 
     private fun setupWorker() {
+        val constraint=Constraints.Builder()
+            .setRequiresBatteryNotLow(true)
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
         val periodicWorkRequest = PeriodicWorkRequest.Builder(
             WorkManagerForNotifying::class.java, 12, TimeUnit.HOURS
-        )
+        ).setConstraints(constraint)
+            .setInitialDelay(6,TimeUnit.HOURS)
+            .addTag(WORKER_TAG)
+            .setBackoffCriteria(BackoffPolicy.LINEAR,
+                PeriodicWorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
             .build()
-        WorkManager.getInstance(this@MyApplication).enqueue(periodicWorkRequest)
+        WorkManager.getInstance().enqueueUniquePeriodicWork(
+            SYNC_DATA_WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            periodicWorkRequest
+        )
     }
 
     companion object {
+        const val WORKER_TAG=""
         const val CHANNEL_ID = "myChannel"
-
+        const val SYNC_DATA_WORK_NAME="this is unique"
         // private FusedLocationProviderClient fusedLocationClient;
         private var instance: MyApplication? = null
         @JvmStatic

@@ -287,7 +287,7 @@ class CountryAdapter(var list: List<Root>?) : RecyclerView.Adapter<ViewHold>() {
         deathsPerMillion.text = data.deathsPerOneMillion.toString()
         val info = data.countryInfo
         if (info != null)
-            Picasso.get().load(info.flag).networkPolicy(NetworkPolicy.OFFLINE)
+            Picasso.get().load(info.flag)
                 .noFade().resize(50, 22).into(countryFlag)
            box.setOnClickListener {
                if (expanded) {

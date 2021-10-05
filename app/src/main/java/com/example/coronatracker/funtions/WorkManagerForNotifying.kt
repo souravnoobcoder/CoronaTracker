@@ -69,24 +69,7 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
                     )
                     val stateContacts = contacts?.data?.contacts?.regional!![stateIndex]
                     stateContactNumber = stateContacts?.number
-                    expandedNotify.setTextViewText(R.id.locationNameText, loc)
-                    expandedNotify.setTextViewText(
-                        R.id.recoveredText,
-                        discharged.toString()
-                    )
-                    expandedNotify.setTextViewText(
-                        R.id.confirmedCaseText,
-                        totalConfirmed.toString()
-                    )
-                    expandedNotify.setTextViewText(R.id.deathsText, deaths.toString())
-                    expandedNotify.setTextViewText(
-                        R.id.foreigner_expandedCard,
-                        confirmedCasesForeign.toString()
-                    )
-                    expandedNotify.setTextViewText(
-                        R.id.indianCitizen_expandedCard,
-                        active.toString()
-                    )
+
                     expandedNotify.setTextViewText(R.id.helpline_expandedCard, stateContactNumber)
                 }
 
@@ -124,6 +107,24 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
                         totalConfirmed.toString()
                     )
                     collapsedNotify.setTextViewText(R.id.deathsText, deaths.toString())
+                    expandedNotify.setTextViewText(R.id.locationNameText, loc)
+                    expandedNotify.setTextViewText(
+                        R.id.recoveredText,
+                        discharged.toString()
+                    )
+                    expandedNotify.setTextViewText(
+                        R.id.confirmedCaseText,
+                        totalConfirmed.toString()
+                    )
+                    expandedNotify.setTextViewText(R.id.deathsText, deaths.toString())
+                    expandedNotify.setTextViewText(
+                        R.id.foreigner_expandedCard,
+                        confirmedCasesForeign.toString()
+                    )
+                    expandedNotify.setTextViewText(
+                        R.id.indianCitizen_expandedCard,
+                        active.toString()
+                    )
                     val notificationBuilder =
                         NotificationCompat.Builder(context, MyApplication.CHANNEL_ID)
                             .setContentTitle(loc)
