@@ -10,16 +10,17 @@ import android.location.Location
 import android.os.Build
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+
 import androidx.preference.PreferenceManager
 import com.example.coronatracker.dataClasses.LocationData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.util.*
 
-class Location(context: Context){
+class Location(val context: Context) {
     private var fusedLocationProviderClient
-    : FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
-    private val cont:Context=context
+            : FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+
     init {
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -53,10 +54,14 @@ class Location(context: Context){
                 setLocation(country, state)
             }
     }
+
+    /**
+     * function for Requesting location permission by user
+     */
     private fun requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ActivityCompat.requestPermissions(
-                cont as Activity,
+                context as Activity,
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_BACKGROUND_LOCATION
@@ -65,32 +70,55 @@ class Location(context: Context){
             )
         } else {
             ActivityCompat.requestPermissions(
-                cont as Activity,
+                context as Activity,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 MY_PERMISSIONS_REQUEST_LOCATION
             )
         }
     }
-    private fun setLocation(country: String, state: String){
-        val sharedPreference= PreferenceManager.getDefaultSharedPreferences(MyApplication.getInstance())
-        val editor=sharedPreference.edit()
-        editor.putString(COUNTRY,country)
-        editor.putString(STATE,state)
+
+    /**
+     * @param country
+     * @param state
+     * is added to sharedPreference
+     */
+    private fun setLocation(country: String, state: String) {
+        val sharedPreference =
+            PreferenceManager.getDefaultSharedPreferences(MyApplication.getInstance())
+        val editor = sharedPreference.edit()
+        editor.putString(COUNTRY, country)
+        editor.putString(STATE, state)
         editor.apply()
     }
-    fun getLocation() : LocationData{
-        val sharedPreference= PreferenceManager.getDefaultSharedPreferences(MyApplication.getInstance())
-        return LocationData(sharedPreference.getString(COUNTRY,"Bharat").toString(),
-            sharedPreference.getString(STATE,"Uttarakhand").toString())
+
+    /**
+     * @return LocationData object
+     * which carries country and state name
+     */
+    fun getLocation(): LocationData {
+        val sharedPreference =
+            PreferenceManager.getDefaultSharedPreferences(MyApplication.getInstance())
+        return LocationData(
+            sharedPreference.getString(COUNTRY, "India").toString(),
+            sharedPreference.getString(STATE, "Uttarakhand").toString()
+        )
     }
+
     companion object {
-        private const val COUNTRY="COUNTRY"
-        private const val STATE="STATE"
+        private const val COUNTRY = "COUNTRY"
+        private const val STATE = "STATE"
         private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
-        fun getLocation() : LocationData{
+
+        /**
+         * @return LocationData object
+         * which carries country and state name
+         */
+        fun getLocation(): LocationData {
             val sharedPreference= PreferenceManager.getDefaultSharedPreferences(MyApplication.getInstance())
-            return LocationData(sharedPreference.getString(COUNTRY,"USA").toString(),
-                sharedPreference.getString(STATE,"Uttarakhand").toString())
+            return LocationData(
+                sharedPreference.getString(COUNTRY, "India").toString(),
+                sharedPreference.getString(STATE, "Uttarakhand").toString()
+            )
         }
     }
 }

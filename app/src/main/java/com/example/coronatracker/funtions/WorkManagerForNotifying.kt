@@ -38,13 +38,13 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
 
     private fun getData() {
         var loc: String? = null
-        var active = 0
+        var active: Int
         var stateContactNumber: String?
         var confirmedCasesIndian = 0
-        var confirmedCasesForeign = 0
-        var discharged = 0
-        var deaths = 0
-        var totalConfirmed = 0
+        var confirmedCasesForeign: Int
+        var discharged: Int
+        var deaths: Int
+        var totalConfirmed: Int
         val country: String = Location.getLocation().country
         val locationState = Location.getLocation().state
         val collapsedNotify =

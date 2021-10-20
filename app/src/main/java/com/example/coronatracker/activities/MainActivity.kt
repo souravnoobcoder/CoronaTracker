@@ -78,6 +78,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var fragmentContainerView: FragmentContainerView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        /**
+         * Setting theme of app by checking in sharedPreferences
+         */
         val theme = themeStatus
         if (theme == values.LIGHT) {
             makeToast(theme)
@@ -91,7 +95,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             setTheme(R.style.Theme_CoronaTracker)
         }
         setContentView(R.layout.activity_main)
+
         initializeValues()
+
+        // Getting app version
+        val appVersion = this.packageManager.getPackageInfo(packageName, 0).versionName
+        print("verion of app : $appVersion")
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.showOverflowMenu()
@@ -105,16 +114,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer?.addDrawerListener(toggle)
         toggle.syncState()
         val worldM = NewsApi.world?.create(Methods::class.java)
-            worldM?.getWorld()?.enqueue(object : Callback<world?> {
-                override fun onResponse(call: Call<world?>, response: Response<world?>) {
-                    val w = response.body()!!
-                    setWorld(
-                        w.population.toString(),
-                        w.cases.toString(),
-                        w.recovered.toString(),
-                        w.deaths.toString(),
-                        w.todayCases.toString(),
-                        w.active.toString(),
+
+        // setting world information in appBarLayout
+        worldM?.getWorld()?.enqueue(object : Callback<world?> {
+            override fun onResponse(call: Call<world?>, response: Response<world?>) {
+                val w = response.body()!!
+                setWorld(
+                    w.population.toString(),
+                    w.cases.toString(),
+                    w.recovered.toString(),
+                    w.deaths.toString(),
+                    w.todayCases.toString(),
+                    w.active.toString(),
                         w.todayDeaths.toString(),
                         w.critical.toString(),
                         w.casesPerOneMillion.toString(),
@@ -126,6 +137,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Toast.makeText(this@MainActivity, "Unable to load Data", Toast.LENGTH_SHORT).show()
                 }
             })
+
+
         setCountries()
         toolbar.setOnMenuItemClickListener(this)
         bottomNavigationView!!.setOnNavigationItemSelectedListener { item: MenuItem ->
@@ -146,12 +159,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         layout!!.setOnRefreshListener(this)
 
-        val location = Location(this@MainActivity)
+        val location = Location(this)
         val locationData = location.getLocation()
         print(" country : ${locationData.country}  state : ${locationData.state}")
         makeToast(" country : ${locationData.country}  state : ${locationData.state}")
     }
 
+    /**
+     * If our drawer is opened then it first closes our drawer and then back only on double click
+     * between 2 seconds gap
+     */
     override fun onBackPressed() {
         if (drawer!!.isDrawerOpen(GravityCompat.START)) {
             drawer!!.closeDrawer(GravityCompat.START)
@@ -165,6 +182,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Handler(Looper.getMainLooper()).postDelayed({ pressedOnce = false }, 2000)
     }
 
+    /**
+     * Handle click on world information which is showing in appBarLayout
+     * It makes extra information visible by setting
+     * [(( moreDataLayout!!.visibility = View.VISIBLE )) , (( moreDataLayout!!.visibility = View.GONE ))] when expanded is false
+     * And makes viewMore visibility Gone by setting [(( moreDataLayout!!.visibility = View.VISIBLE )) , (( viewMore!!.visibility = View.GONE ))]
+     */
     fun toolClick(view: View) {
         if (expanded) {
             TransitionManager.beginDelayedTransition(box, AutoTransition())
@@ -179,6 +202,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    /**
+     * Setting world information in appBarLayout
+     */
     private fun setWorld(
         totalPopulation: String,
         confirmed: String,
@@ -205,6 +231,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    /**
+     * Initializing variables
+     */
     private fun initializeValues() {
         settingStart()
         layout = findViewById(R.id.refresh_layout)
@@ -225,9 +254,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fragmentContainerView = findViewById(R.id.recycle_fragment_view)
     }
 
-    fun setCountryFragment(root: List<Root?>?) {
+    /**
+     * Launching country fragment and passing  list of countries
+     * with animation
+     */
+    fun setCountryFragment(countries: List<Root?>?) {
         val args = Bundle()
-        args.putParcelableArrayList(CountryData.ARG_PARAM1, root as ArrayList<out Parcelable?>?)
+        args.putParcelableArrayList(
+            CountryData.ARG_PARAM1,
+            countries as ArrayList<out Parcelable?>?
+        )
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.enter_from_left,
@@ -237,6 +273,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .commitAllowingStateLoss()
     }
 
+    /**
+     * Launching state fragment and list of contacts and states
+     * with animation
+     */
     fun setStateFragment(
         states: List<Regional?>?,
         contacts: List<com.example.coronatracker.dataClasses.indiaContactModel.Regional?>?
@@ -256,6 +296,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .commit()
     }
 
+    /**
+     * Launches Loading fragment
+     */
     private fun settingStart() {
         supportFragmentManager.beginTransaction()
             .setReorderingAllowed(false)
@@ -263,13 +306,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .commit()
     }
 
+    /**
+     * Handling events of Navigation Drawer
+     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
         if (itemId == R.id.search) makeToast("search")
         else if (itemId == R.id.call) makeToast("call")
         else if (itemId == R.id.change_theme) makeAlert()
-        else if (itemId == R.id.safety) makeToast("Safety")
-        else if (itemId == R.id.second || itemId == R.id.third) makeToast("progress")
+        else if (itemId == R.id.safety) {
+            throw RuntimeException("Test Crash")
+        } else if (itemId == R.id.second || itemId == R.id.third) makeToast("progress")
         drawer!!.closeDrawer(GravityCompat.START)
         return true
     }
@@ -278,6 +325,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
     }
 
+    /**
+     * fetches states and contacts data from api and give this data to setStateFragment() function which launches fragment
+     */
     private fun startIndianState() {
         settingStart();
         val myMethod = NewsApi.indiaState?.create(Methods::class.java)
@@ -311,6 +361,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
+    /**
+     * fetches country data from api and give this data to setCountry() function which launches fragment
+     */
     private fun setCountries() {
         val method = NewsApi.apiInstance?.create(Methods::class.java)
         method?.getData()?.enqueue(object : Callback<List<Root?>?> {
@@ -326,11 +379,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
+    /**
+     * Initializing search icon which is on the AppBarLayout
+     */
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
+    /**
+     * Initializing and setting action when search icon is pressed in appBarLayout
+     * and country fragment  is opened it invokes startCountrySearch() method
+     * and if state fragment  is opened it invokes startStateSearch() method
+     */
     override fun onMenuItemClick(item: MenuItem): Boolean {
         if (item.itemId == R.id.search_bar_option) {
             if (country) startCountrySearch() else startStateSearch()
@@ -338,12 +399,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    /**
+     * @Launching search activity for state search
+     * by passing value state
+     */
     private fun startStateSearch() {
         val intent = Intent(this@MainActivity, SearchHandle::class.java)
         intent.putExtra(values.COUNTRY_INTENT, "state")
         startActivity(intent)
     }
 
+    /**
+     * @Launching search activity for country search
+     * by passing value country
+     */
     private fun startCountrySearch() {
         val intent = Intent(this@MainActivity, SearchHandle::class.java)
         intent.putParcelableArrayListExtra(
@@ -354,6 +423,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         startActivity(intent)
     }
 
+    /**
+     * on Refresh function is invoked whenever user refreshed the page
+     * Firstly it checks on which fragment user is and then user is in
+     * country fragment it calls setCountries() method and when user is in
+     * state fragment it calls startIndianState(
+     */
     override fun onRefresh() {
         if (country) setCountries() else startIndianState()
         CoroutineScope(Main).launch {
@@ -362,6 +437,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    /**
+     * @Showing AlertDialog Box for setting theme of the app
+     * when any theme is selected it updates the sharePreference of application
+     */
     private fun makeAlert() {
         val themeView = layoutInflater.inflate(R.layout.theme_choice, null)
         val dark = themeView.findViewById<RadioButton>(R.id.dark_theme)
@@ -382,6 +461,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dialog.show()
     }
 
+    /**
+     * getting and setting the themeStatus in sharedPreferences
+     * and while setting themeStatus also relaunching activity for applying changes
+     */
     private var themeStatus: String?
         get() {
             val sharedPreferences =

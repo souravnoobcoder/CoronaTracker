@@ -1,28 +1,26 @@
 package com.example.coronatracker.activities
 
 
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.textfield.TextInputEditText
-import com.example.coronatracker.room.indiaStateModel
-import com.example.coronatracker.adapters.CountryAdapter
-import com.example.coronatracker.adapters.StateAdapter
-import android.text.TextWatcher
 import android.os.Bundle
-import com.example.coronatracker.R
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.coronatracker.dataClasses.values
 import android.text.Editable
-import androidx.lifecycle.Observer
+import android.text.TextWatcher
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.coronatracker.R
+import com.example.coronatracker.adapters.CountryAdapter
 import com.example.coronatracker.adapters.CountryHistoryAdapter
+import com.example.coronatracker.adapters.StateAdapter
 import com.example.coronatracker.adapters.StateHistoryAdapter
 import com.example.coronatracker.dataClasses.Root
+import com.example.coronatracker.dataClasses.values
 import com.example.coronatracker.room.CountryRecent
 import com.example.coronatracker.room.ViewModel
+import com.example.coronatracker.room.indiaStateModel
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -38,12 +36,18 @@ class SearchHandle : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_handle)
+
+        // Initializing variables
         fullSearchingListState = ArrayList()
         fullSearchingList = ArrayList()
         inputEditText = findViewById(R.id.search_bar)
         model= ViewModelProviders.of(this@SearchHandle).get(ViewModel::class.java)
         val recyclerView = findViewById<RecyclerView>(R.id.searched_countries)
         recyclerView.layoutManager = LinearLayoutManager(this)
+
+        /**
+         * Checking which adapter should be initialized by checking extras in intent
+         */
         know = intent.getStringExtra(values.COUNTRY_INTENT)
         if ((know == "country")) {
             inputEditText?.hint = "Enter Country"
@@ -57,6 +61,10 @@ class SearchHandle : AppCompatActivity() {
             setStateList()
         }
         inputEditText?.isSelected = true
+
+        /**
+         * Setting data in adapter by checking extras in intent
+         */
         val recentRecycle =findViewById<RecyclerView>(R.id.history_recycle)
         var historyAdapter: StateHistoryAdapter?
         var historyCountryAdapter: CountryHistoryAdapter? =null
@@ -72,13 +80,12 @@ class SearchHandle : AppCompatActivity() {
                 { t ->  historyAdapter=StateHistoryAdapter(t!!)
                     recentRecycle.adapter=historyAdapter})
         }
-        val country=CountryRecent("kdfkd")
-        CoroutineScope(IO).launch {
-            model?.insertCountry(country)
-        }
-
     }
 
+    /**
+     * When onStart() is called we start watching the text changes in Edittext
+     * and add textChangeListener
+     */
     override fun onStart() {
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -96,11 +103,19 @@ class SearchHandle : AppCompatActivity() {
         super.onStart()
     }
 
+    /**
+     * When onStop() is called means user is no longer interacting with our application so we
+     * removes our textChangeListener
+     */
     override fun onStop() {
         inputEditText!!.removeTextChangedListener(textWatcher)
         super.onStop()
     }
 
+    /**
+     * It sorts the list of country items with your searched string
+     * And returns the sorted country list
+     */
     fun sorting(searched: String?): List<Root> {
         val searchingSortedList: MutableList<Root> = ArrayList()
         for (root: Root in fullSearchingList!!) {
@@ -110,6 +125,10 @@ class SearchHandle : AppCompatActivity() {
         return searchingSortedList
     }
 
+    /**
+     * It sorts the list of state items with your searched string
+     * And returns the sorted state list
+     */
     fun sortingOfState(searched: String?): List<indiaStateModel?> {
         val sortedList: MutableList<indiaStateModel?> = ArrayList()
         for (i in fullSearchingListState!!.indices) {
@@ -122,17 +141,13 @@ class SearchHandle : AppCompatActivity() {
         return sortedList
     }
 
+    /**
+     * get list of data by launching a coroutine
+     */
     private fun setStateList() {
         CoroutineScope(IO).launch {
            fullSearchingListState= model?.getOfflineDataB()
         }
     }
-   // private fun insertState(country : String){
-//        CoroutineScope(IO).launch {
-//            CountryAdapter.countries.contains(country)
-//            delay(3000).run {
-//                model?.insertCountry()
-//            }
-//        }
-//    }
+
 }

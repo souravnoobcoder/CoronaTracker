@@ -18,21 +18,20 @@ class MyApplication : Application() {
             instance = this
         }
         notificationCreator()
-        val sharedPreferences : SharedPreferences=PreferenceManager.getDefaultSharedPreferences(this)
-        val bool: Boolean= sharedPreferences.getBoolean("Bool",false)
-
             setupWorker()
-            sharedPreferences.edit().putBoolean("Bool",true).apply()
-
     }
 
+    /**
+     * @return true if connected to network
+     * @return false if not connected to any network
+     */
     private val isNetworkConnected: Boolean
-        get() {
-            val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-            val activeNetwork = cm.activeNetworkInfo
-            return activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting
-        }
+    get() {
+        val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = cm.activeNetworkInfo
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting
+    }
 
     private fun notificationCreator() {
 
@@ -50,6 +49,10 @@ class MyApplication : Application() {
         }
     }
 
+    /**
+     * setting worker for notifying User every 12 hours on behalf of his
+     * @location
+     */
     private fun setupWorker() {
         val constraint=Constraints.Builder()
             .setRequiresBatteryNotLow(true)
@@ -71,16 +74,25 @@ class MyApplication : Application() {
     }
 
     companion object {
-        const val WORKER_TAG=""
+        const val WORKER_TAG = ""
         const val CHANNEL_ID = "myChannel"
-        const val SYNC_DATA_WORK_NAME="this is unique"
+        const val SYNC_DATA_WORK_NAME = "this is unique"
+
         // private FusedLocationProviderClient fusedLocationClient;
         private var instance: MyApplication? = null
+
+        /**
+         * @return instance of application
+         */
         @JvmStatic
         fun getInstance(): Context? {
             return instance
         }
 
+        /**
+         * @return true if connected to network
+         * @return false if not connected to any network
+         */
         @JvmStatic
         fun hasNetwork(): Boolean {
             return instance!!.isNetworkConnected

@@ -2,9 +2,14 @@ package com.example.coronatracker.funtions
 
 import com.example.coronatracker.dataClasses.Root
 import com.example.coronatracker.dataClasses.indiaModel.Regional
-import java.util.*
 
 object ImportantFun {
+
+    /**
+     * @return index on which
+     * @param state is present in
+     * @param list
+     */
     fun getStateIndex(list: List<Regional>,state:String) : Int{
         var i=0
         while (i<list.size){
@@ -14,6 +19,12 @@ object ImportantFun {
         }
         return -1
     }
+
+    /**
+     * @return index on which
+     * @param state is present in
+     * @param list
+     */
     fun getStateContactIndex(list: List<com.example.coronatracker.dataClasses.indiaContactModel.Regional>,
                               state:String) : Int{
         var i=0
@@ -24,6 +35,12 @@ object ImportantFun {
         }
         return -1
     }
+
+    /**
+     * @return index on which
+     * @param country is present in
+     * @param list
+     */
     fun getCountryIndex(list: List<Root>,country : String) : Int{
         var i=0
         while (i<list.size){

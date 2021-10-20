@@ -63,6 +63,7 @@
             android:layout_alignBottom="@id/deathCasesLayout"
             android:layout_marginStart="10dp"
             android:gravity="bottom"
+            android:layout_marginBottom="-10dp"
             android:orientation="vertical">
 
             <TextView
@@ -115,6 +116,7 @@
             android:textAlignment="center" />
 
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:id="@+id/moreDataLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
