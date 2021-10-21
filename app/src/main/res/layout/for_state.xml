@@ -18,13 +18,13 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:id="@+id/cardParentLayout"
+            android:id="@+id/country_data_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp">
 
             <TextView
-                android:id="@+id/locationNameText"
+                android:id="@+id/locationName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -52,7 +52,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/confirmedCaseText"
+                    android:id="@+id/confirmedCase"
                     android:text="000"
                     android:textSize="20sp"
                     android:textColor="@color/teal_700"
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_below="@id/locationNameText"
+                android:layout_below="@id/locationName"
                 android:layout_marginStart="10dp"
                 android:layout_alignBottom="@id/deathCasesLayout"
                 android:gravity="bottom"
@@ -78,7 +78,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/recoveredText"
+                    android:id="@+id/recovered"
                     android:text="00"
                     android:textStyle="bold"
                     android:textSize="20sp"
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:orientation="vertical"
-                android:layout_below="@id/locationNameText"
+                android:layout_below="@id/locationName"
                 android:layout_marginEnd="10dp"
                 android:layout_alignStart="@id/confirmedCasesLayout"
                 android:layout_marginTop="15dp"
@@ -105,7 +105,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/deathsText"
+                    android:id="@+id/deaths"
                     android:text="000"
                     android:textColor="#000"
                     android:textSize="20sp" />
@@ -120,14 +120,13 @@
                 android:textAlignment="center" />
 
             <LinearLayout
-                android:id="@+id/moreDataLay"
+                android:id="@+id/moreDataLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/recoveredCountLayout"
                 android:layout_marginStart="10dp"
-                android:orientation="vertical"
                 android:layout_marginEnd="10dp"
-                android:visibility="gone">
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -147,7 +146,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/indianCitizen_expandedCard"
+                            android:id="@+id/activeCases"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="00"
@@ -174,7 +173,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/foreigner_expandedCard"
+                            android:id="@+id/foreignerCases"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="00"
@@ -202,7 +201,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/helpline_expandedCard"
+                        android:id="@+id/helpline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:autoLink="phone"

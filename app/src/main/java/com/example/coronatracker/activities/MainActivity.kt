@@ -10,9 +10,7 @@ import android.transition.TransitionManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.RadioButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -21,10 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentContainerView
 import androidx.preference.PreferenceManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.coronatracker.R
 import com.example.coronatracker.R.string
 import com.example.coronatracker.api.Methods
@@ -35,11 +30,10 @@ import com.example.coronatracker.databinding.ActivityMainBinding
 import com.example.coronatracker.databinding.WorldItemBinding
 import com.example.coronatracker.features.TrackViewModel
 import com.example.coronatracker.fragments.CountryData
-import com.example.coronatracker.fragments.IndiaStateFragment
+import com.example.coronatracker.fragments.IndiaFragment
 import com.example.coronatracker.fragments.Launching
 import com.example.coronatracker.funtions.Location
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -81,7 +75,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(binding.root)
 
         binding.apply {
+            setSupportActionBar(toolbar)
+            toolbar.setOnMenuItemClickListener {
+                if (it.itemId == R.id.search_bar_option) {
+                    if (country) startCountrySearch() else startStateSearch()
+                }
+                true
+            }
+            appBarLayout.setOnClickListener{
+                if (expanded) {
+                    TransitionManager.beginDelayedTransition(appBarLayout, AutoTransition())
+                    worldBinding.run {
+                        moreDataLayout.visibility = View.GONE
+                        viewMore.visibility = View.VISIBLE
+                    }
+                    expanded = false
+                } else {
+                    TransitionManager.beginDelayedTransition(appBarLayout, AutoTransition())
+                    worldBinding.run {
+                        viewMore.visibility = View.GONE
+                        moreDataLayout.visibility = View.VISIBLE
+                    }
+                    expanded = true
+                }
+            }
             box=appBarLayout
+
             drawer = drawerLayout
             refreshLayout.run {
                 setOnRefreshListener {
@@ -125,7 +144,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 deathsPerMillion.text = data?.deathsPerMillion
             }
         }
-        initializeValues()
 
         // Getting app version
         val appVersion = this.packageManager.getPackageInfo(packageName, 0).versionName
@@ -141,30 +159,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawer?.addDrawerListener(toggle)
         toggle.syncState()
-        val worldM = NewsApi.world?.create(Methods::class.java)
-        // setting world information in appBarLayout
-        worldM?.getWorld()?.enqueue(object : Callback<world?> {
-            override fun onResponse(call: Call<world?>, response: Response<world?>) {
-                val w = response.body()!!
-                setWorld(
-                    w.population.toString(),
-                    w.cases.toString(),
-                    w.recovered.toString(),
-                    w.deaths.toString(),
-                    w.todayCases.toString(),
-                    w.active.toString(),
-                    w.todayDeaths.toString(),
-                    w.critical.toString(),
-                    w.casesPerOneMillion.toString(),
-                    w.deathsPerOneMillion.toString()
-                )
-            }
-
-            override fun onFailure(call: Call<world?>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Unable to load Data", Toast.LENGTH_SHORT).show()
-            }
-        })
-
 
         setCountries()
         toolbar.setOnMenuItemClickListener(this)
@@ -198,34 +192,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * [(( moreDataLayout!!.visibility = View.VISIBLE )) , (( moreDataLayout!!.visibility = View.GONE ))] when expanded is false
      * And makes viewMore visibility Gone by setting [(( moreDataLayout!!.visibility = View.VISIBLE )) , (( viewMore!!.visibility = View.GONE ))]
      */
-    fun toolClick(view: View) {
-        if (expanded) {
-            TransitionManager.beginDelayedTransition(box, AutoTransition())
-            worldBinding.run {
-                moreDataLayout.visibility = View.GONE
-                viewMore.visibility = View.VISIBLE
-            }
-            expanded = false
-        } else {
-            TransitionManager.beginDelayedTransition(box, AutoTransition())
-            worldBinding.run {
-                viewMore.visibility = View.GONE
-                moreDataLayout.visibility = View.VISIBLE
-            }
-            expanded = true
-        }
-    }
+
 
     /**
      * Setting world information in appBarLayout
      */
 
-    /**
-     * Initializing variables
-     */
-    private fun initializeValues() {
-        settingStart()
-    }
 
     /**
      * Launching country fragment and passing  list of countries
@@ -265,7 +237,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
-            .replace(R.id.recycle_fragment_view, IndiaStateFragment::class.java, args)
+            .replace(R.id.recycle_fragment_view, IndiaFragment::class.java, args)
             .commit()
     }
 

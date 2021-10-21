@@ -40,9 +40,9 @@ data class Country(
 
 @Entity(tableName = "India")
 data class India(
-    private val loc: String?,
+    val loc: String?,
     val confirmedCasesForeign: String?,
-    val discharged: String?,
+    val recovered: String?,
     val deaths: String?,
     val totalConfirmed: String?,
     val number: String?,

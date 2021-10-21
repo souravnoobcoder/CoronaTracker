@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@+id/cardParentLayout"
+        android:id="@+id/country_data_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/locationNameTextView"
+            android:id="@+id/locationName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -39,7 +39,7 @@
                 android:text="Confirmed" />
 
             <TextView
-                android:id="@+id/confirmedCaseTextView"
+                android:id="@+id/confirmedCase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="11000"
@@ -52,7 +52,7 @@
             android:id="@+id/country_flag"
             android:layout_width="50dp"
             android:layout_height="22dp"
-            android:layout_below="@id/locationNameTextView"
+            android:layout_below="@id/locationName"
             android:layout_marginStart="10dp" />
 
         <LinearLayout
@@ -72,7 +72,7 @@
                 android:text="Recovered" />
 
             <TextView
-                android:id="@+id/recoveredTextView"
+                android:id="@+id/recovered"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00"
@@ -86,7 +86,7 @@
             android:id="@+id/deathCasesLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/locationNameTextView"
+            android:layout_below="@id/locationName"
             android:layout_alignStart="@id/confirmedCasesLayout"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="15dp"
@@ -99,7 +99,7 @@
                 android:text="Deaths" />
 
             <TextView
-                android:id="@+id/deathsTextView"
+                android:id="@+id/deaths"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="000"
@@ -108,7 +108,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/viewMoreText"
+            android:id="@+id/viewMore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/recoveredCountLayout"
@@ -123,9 +123,7 @@
             android:layout_below="@id/recoveredCountLayout"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:orientation="vertical"
-            android:visibility="gone"
-          >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -144,7 +142,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/casesToday_expandedCard"
+                        android:id="@+id/casesToday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00"
@@ -172,7 +170,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/activeCases_expandedCard"
+                        android:id="@+id/activeCases"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00"
@@ -199,7 +197,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/deathsToday_expandedCard"
+                        android:id="@+id/deathsToday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00"
@@ -235,7 +233,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/criticalCases_expandedCard"
+                        android:id="@+id/criticalCases"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00"
@@ -262,7 +260,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/casesPerMillion_expandedCard"
+                        android:id="@+id/casesPerMillion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00"
@@ -298,7 +296,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/deathsPerMillion_expandedCard"
+                        android:id="@+id/deathsPerMillion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0000"
@@ -322,7 +320,7 @@
             android:id="@+id/population_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/locationNameTextView"
+            android:layout_below="@id/locationName"
             android:layout_toLeftOf="@id/deathCasesLayout"
             android:layout_toRightOf="@id/recoveredCountLayout">
 
@@ -333,7 +331,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/total_populationNumber"
+                    android:id="@+id/totalPopulation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="55555555"

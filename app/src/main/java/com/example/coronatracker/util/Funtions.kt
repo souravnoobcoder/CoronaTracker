@@ -43,5 +43,35 @@ fun getCountryObject(country: Root,flag: String?) = Country(
         country.deathsPerOneMillion.toString()
 )
 
+fun getCountryList(countries: List<Root>) =
+        run {
+                val listOfCountries: MutableList<Country> = ArrayList()
+                for (i in countries.indices) {
+                        val country = countries[i]
+                        val countryObject = getCountryObject(country, country.countryInfo?.flag)
+                        listOfCountries.add(countryObject)
+                }
+                listOfCountries.toList()
+        }
+
+fun getStateList(indiaStates: MutableList<regional?>?, stateContacts: MutableList<Regional>?) =
+        run {
+                val indices = indiaStates?.indices
+                val stateList: MutableList<India> = ArrayList()
+                for (i in indices!!) {
+                        indiaStates[i]?.loc?.run {
+                                for (j in 0 until stateContacts!!.size) {
+                                        if (this == stateContacts[j].loc){
+                                                stateList.add(getIndiaObject(
+                                                        indiaStates[i]!!,
+                                                        stateContacts[j]
+                                                ))
+                                                stateContacts.removeAt(j)
+                                        }
+                                }
+                        }
+                }
+                stateList.toList()
+        }
 
 

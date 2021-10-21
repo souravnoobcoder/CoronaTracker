@@ -5,10 +5,7 @@ import com.example.coronatracker.api.Methods
 import com.example.coronatracker.room.Country
 import com.example.coronatracker.room.India
 import com.example.coronatracker.room.TrackDatabase
-import com.example.coronatracker.util.getCountryObject
-import com.example.coronatracker.util.getIndiaObject
-import com.example.coronatracker.util.getWorldObject
-import com.example.coronatracker.util.networkBoundResource
+import com.example.coronatracker.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -43,17 +40,10 @@ class TrackRepository @Inject constructor(
             countryApi.getCountries()
         },
         saveFetchResult = { countries ->
-            val listOfCountries: MutableList<Country> = ArrayList()
-            for (i in countries.indices) {
-                val country = countries[i]
-                val countryObject = getCountryObject(country, country.countryInfo?.flag)
-                listOfCountries.add(countryObject)
-            }
             database.withTransaction {
                 dao.deleteCountryAll()
-                dao.insertCountries(listOfCountries)
+                dao.insertCountries(getCountryList(countries))
             }
-
         }
     )
 
@@ -69,6 +59,7 @@ class TrackRepository @Inject constructor(
         saveFetchResult = { indiaPair ->
             val indiaList = indiaPair.first.data?.regional
             val indiaContactList = indiaPair.second.data?.contacts?.regional
+            getStateList(indiaList?.toMutableList(),indiaContactList?.toMutableList())
             val indicesOfIndiaList = indiaList?.indices!!
             val indiaRoomList: MutableList<India> = ArrayList()
             for (i in indicesOfIndiaList) {

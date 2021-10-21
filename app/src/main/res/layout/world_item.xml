@@ -6,7 +6,7 @@
     android:id="@+id/world_item">
 
     <RelativeLayout
-        android:id="@+id/cardParentLayout"
+        android:id="@+id/country_data_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"

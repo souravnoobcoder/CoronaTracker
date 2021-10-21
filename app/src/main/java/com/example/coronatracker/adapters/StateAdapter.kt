@@ -2,88 +2,59 @@ package com.example.coronatracker.adapters
 
 import android.transition.AutoTransition
 import android.transition.TransitionManager
-import com.example.coronatracker.room.indiaStateModel
-import androidx.recyclerview.widget.RecyclerView
-import com.example.coronatracker.adapters.StateAdapter.ViewHolder
-import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
-import com.example.coronatracker.R
-import android.widget.TextView
-import android.widget.LinearLayout
-import com.google.android.material.card.MaterialCardView
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
+import androidx.recyclerview.widget.RecyclerView
+import com.example.coronatracker.databinding.ForStateBinding
+import com.example.coronatracker.room.India
 
-class StateAdapter(private var stateModelList: List<indiaStateModel>?) :
-    RecyclerView.Adapter<ViewHolder>() {
+class StateAdapter : RecyclerView.Adapter<StateAdapter.ViewHolder>() {
+    private var india: List<India> = emptyList()
     private var expanded = false
-    fun update(stateModelList: List<indiaStateModel>) {
-        this.stateModelList = stateModelList
+    fun update(updatedIndia: List<India>) {
+        india = updatedIndia
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.for_state, parent, false)
-        return ViewHolder(view)
+        val binding = ForStateBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val model = stateModelList!![position]
-        val confirmed = holder.confirmed
-        val recovered = holder.recovered
-        val deaths = holder.deaths
-        val stateName = holder.stateName
-        val helplineNumber = holder.helplineNumber
-        val foreignConfirmed = holder.foreignConfirmed
-        val activeCases = holder.activeCases
-        val viewMore = holder.viewMore
-        val moreDataLayout = holder.moreDataLayout
-        val box = holder.box
-        stateName.text = model.loc
-        helplineNumber.text = model.number
-        confirmed.text = model.totalConfirmed.toString()
-        recovered.text = model.discharged.toString()
-        deaths.text = model.deaths.toString()
-        foreignConfirmed.text = model.confirmedCasesForeign.toString()
-        activeCases.text = model.activeCases.toString()
-           box.setOnClickListener {
-               if (expanded) {
-                   TransitionManager.beginDelayedTransition(box, AutoTransition())
-                   moreDataLayout.visibility = View.GONE
-                   viewMore.visibility = View.VISIBLE
-                   expanded = false
-               } else {
-                   TransitionManager.beginDelayedTransition(box, AutoTransition())
-                   viewMore.visibility = View.GONE
-                   moreDataLayout.visibility = View.VISIBLE
-                   expanded = true
-               }
-       }
-
-
+            val state = india[position]
+        holder.itemBinding.run {
+            locationName.text = state.loc
+            helpline.text = state.number
+            confirmedCase.text = state.totalConfirmed
+            recovered.text = state.recovered
+            deaths.text=state.deaths
+            foreignerCases.text=state.confirmedCasesForeign
+            activeCases.text=state.activeCases
+            stateDataCard.setOnClickListener {
+                if (expanded) {
+                    TransitionManager.beginDelayedTransition(stateDataCard, AutoTransition())
+                    moreDataLayout.visibility = View.GONE
+                    viewMore.visibility = View.VISIBLE
+                    expanded = false
+                } else {
+                    TransitionManager.beginDelayedTransition(stateDataCard, AutoTransition())
+                    viewMore.visibility = View.GONE
+                    moreDataLayout.visibility = View.VISIBLE
+                    expanded = true
+                }
+            }
+        }
         setLeftAnimation(holder.itemView, position)
     }
 
     override fun getItemCount(): Int {
-        return if (stateModelList == null) 0 else stateModelList!!.size
+        return india.size
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var stateName: TextView = itemView.findViewById(R.id.locationNameText)
-        var confirmed: TextView = itemView.findViewById(R.id.confirmedCaseText)
-        var deaths: TextView = itemView.findViewById(R.id.deathsText)
-        var recovered: TextView = itemView.findViewById(R.id.recoveredText)
-        var activeCases: TextView = itemView.findViewById(R.id.indianCitizen_expandedCard)
-        var helplineNumber: TextView = itemView.findViewById(R.id.helpline_expandedCard)
-        var foreignConfirmed: TextView = itemView.findViewById(R.id.foreigner_expandedCard)
-        var viewMore: TextView = itemView.findViewById(R.id.viewMore)
-        var moreDataLayout: LinearLayout = itemView.findViewById(R.id.moreDataLay)
-        var box: MaterialCardView = itemView.findViewById(R.id.stateDataCard)
-
-    }
+    class ViewHolder(var itemBinding: ForStateBinding) : RecyclerView.ViewHolder(itemBinding.root)
 
     companion object {
         private var lastPosition = -1
