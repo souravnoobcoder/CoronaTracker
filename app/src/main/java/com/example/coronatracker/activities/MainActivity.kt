@@ -352,7 +352,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * by passing value state
      */
     private fun startStateSearch() {
-        val intent = Intent(this@MainActivity, SearchHandle::class.java)
+        val intent = Intent(this@MainActivity, StateSearchHandle::class.java)
         intent.putExtra(values.COUNTRY_INTENT, "state")
         startActivity(intent)
     }
@@ -362,7 +362,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * by passing value country
      */
     private fun startCountrySearch() {
-        val intent = Intent(this@MainActivity, SearchHandle::class.java)
+        val intent = Intent(this@MainActivity, StateSearchHandle::class.java)
         intent.putParcelableArrayListExtra(
             values.COUNTRY_VAL,
             rootList as ArrayList<out Parcelable?>?
