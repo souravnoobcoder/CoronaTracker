@@ -4,13 +4,13 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Build
-import androidx.preference.PreferenceManager
 import androidx.work.*
+import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 
+@HiltAndroidApp
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
@@ -18,7 +18,7 @@ class MyApplication : Application() {
             instance = this
         }
         notificationCreator()
-            setupWorker()
+        setupWorker()
     }
 
     /**
@@ -26,12 +26,12 @@ class MyApplication : Application() {
      * @return false if not connected to any network
      */
     private val isNetworkConnected: Boolean
-    get() {
-        val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = cm.activeNetworkInfo
-        return activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting
-    }
+        get() {
+            val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+            val activeNetwork = cm.activeNetworkInfo
+            return activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting
+        }
 
     private fun notificationCreator() {
 

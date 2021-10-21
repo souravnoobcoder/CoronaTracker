@@ -57,7 +57,7 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
             var contacts: stateContacts? = null
             val stateCall = NewsApi.indiaState?.create(Methods::class.java)
 
-            stateCall?.getContacts()?.enqueue(object : Callback<stateContacts?> {
+            stateCall?.getIndiaStateContacts()?.enqueue(object : Callback<stateContacts?> {
                 override fun onResponse(
                     call: Call<stateContacts?>,
                     response: Response<stateContacts?>
@@ -79,7 +79,7 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
                 }
 
             })
-            stateCall?.getStates()?.enqueue(object : Callback<indiaStates?> {
+            stateCall?.getIndiaStates()?.enqueue(object : Callback<indiaStates?> {
 
                 override fun onResponse(
                     call: Call<indiaStates?>,
@@ -153,7 +153,7 @@ class WorkManagerForNotifying(val context: Context, workerParameters: WorkerPara
 
             val method = NewsApi.apiInstance?.create(Methods::class.java)
 
-            method?.getData()?.enqueue(object : Callback<List<Root?>> {
+            method?.getCountries()?.enqueue(object : Callback<List<Root?>> {
 
                 override fun onResponse(call: Call<List<Root?>>, response: Response<List<Root?>>) {
                     print("work manager is called")

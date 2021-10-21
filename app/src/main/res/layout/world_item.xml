@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/world_item">
 
     <RelativeLayout
         android:id="@+id/cardParentLayout"
@@ -15,11 +16,11 @@
             android:id="@+id/locationNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:layout_toStartOf="@id/confirmedCasesLayout"
             android:text=""
-            android:layout_alignParentStart="true"
             android:textColor="#000"
             android:textSize="25sp" />
 
@@ -38,7 +39,7 @@
                 android:text="Confirmed" />
 
             <TextView
-                android:id="@+id/confirmedCaseTextView"
+                android:id="@+id/confirmedCase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="11000"
@@ -64,7 +65,7 @@
                 android:text="Recovered" />
 
             <TextView
-                android:id="@+id/recoveredTextView"
+                android:id="@+id/recovered"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00"
@@ -91,7 +92,7 @@
                 android:text="Deaths" />
 
             <TextView
-                android:id="@+id/deathsTextView"
+                android:id="@+id/deaths"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="000"
@@ -100,7 +101,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/viewMoreText"
+            android:id="@+id/viewMore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/recoveredCountLayout"
@@ -115,8 +116,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:orientation="vertical"
-            android:visibility="gone"
-            >
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -135,7 +135,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/casesToday_expandedCard"
+                        android:id="@+id/casesToday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00"
@@ -163,7 +163,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/activeCases_expandedCard"
+                        android:id="@+id/activeCases"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00"
@@ -190,7 +190,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/deathsToday_expandedCard"
+                        android:id="@+id/deathsToday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00"
@@ -226,7 +226,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/criticalCases_expandedCard"
+                        android:id="@+id/criticalCases"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00"
@@ -253,7 +253,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/casesPerMillion_expandedCard"
+                        android:id="@+id/casesPerMillion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00"
@@ -272,6 +272,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:gravity="center_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -289,7 +290,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/deathsPerMillion_expandedCard"
+                        android:id="@+id/deathsPerMillion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0000"
@@ -324,7 +325,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/total_populationNumber"
+                    android:id="@+id/totalPopulation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="55555555"

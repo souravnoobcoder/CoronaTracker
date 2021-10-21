@@ -4,10 +4,10 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 
 class Repo(application: Application?) {
-    private val dao: ContactDao
+    private val dao: TrackDao
     val offlineData: LiveData<List<indiaStateModel?>?>?
 
-    suspend fun insert(model: indiaStateModel?) = dao.insert(model)
+    suspend fun insert(model: indiaStateModel?) = dao.insertIndia(model)
 
     suspend fun deleteAll() = dao.deleteAll()
 
@@ -22,7 +22,7 @@ class Repo(application: Application?) {
     fun getRecentCountry(): LiveData<List<CountryRecent>> =dao.getRecentCountry()
 
     init {
-        val base = database.getDbINSTANCE(application)
+        val base = TrackDatabase.getDbINSTANCE(application)
         dao = base.contactDao()
         offlineData = dao.getOfflineData()
     }

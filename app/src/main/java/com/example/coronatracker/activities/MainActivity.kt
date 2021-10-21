@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -29,11 +30,10 @@ import com.example.coronatracker.R.string
 import com.example.coronatracker.api.Methods
 import com.example.coronatracker.api.NewsApi
 import com.example.coronatracker.dataClasses.Root
-import com.example.coronatracker.dataClasses.indiaContactModel.stateContacts
-import com.example.coronatracker.dataClasses.indiaModel.Regional
-import com.example.coronatracker.dataClasses.indiaModel.indiaStates
 import com.example.coronatracker.dataClasses.values
-import com.example.coronatracker.dataClasses.world
+import com.example.coronatracker.databinding.ActivityMainBinding
+import com.example.coronatracker.databinding.WorldItemBinding
+import com.example.coronatracker.features.TrackViewModel
 import com.example.coronatracker.fragments.CountryData
 import com.example.coronatracker.fragments.IndiaStateFragment
 import com.example.coronatracker.fragments.Launching
@@ -41,6 +41,7 @@ import com.example.coronatracker.funtions.Location
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.delay
@@ -50,52 +51,80 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    Toolbar.OnMenuItemClickListener, OnRefreshListener {
+    Toolbar.OnMenuItemClickListener {
+
+    private val viewModel: TrackViewModel by viewModels()
     private var expanded = false
     private var pressedOnce = false
     var country = true
     private var stateLaunched = false
-    private var totalPopulation: TextView? = null
-    var confirmed: TextView? = null
-    var recovered: TextView? = null
-    var deaths: TextView? = null
-    private var casesToday: TextView? = null
-    private var activeCases: TextView? = null
-    private var deathsToday: TextView? = null
-    private var criticalCases: TextView? = null
-    private var casesPerMillion: TextView? = null
-    private var deathsPerMillion: TextView? = null
-    private var viewMore: TextView? = null
     var rootList: List<Root?>? = null
     var states: List<Regional?>? = null
     var contacts: List<com.example.coronatracker.dataClasses.indiaContactModel.Regional?>? = null
-    private var bottomNavigationView: BottomNavigationView? = null
     private var box: AppBarLayout? = null
-    var layout: SwipeRefreshLayout? = null
-    private var moreDataLayout: LinearLayout? = null
     private var drawer: DrawerLayout? = null
-    private var fragmentContainerView: FragmentContainerView? = null
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var worldBinding: WorldItemBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        worldBinding = WorldItemBinding.bind(binding.root)
         /**
          * Setting theme of app by checking in sharedPreferences
          */
         val theme = themeStatus
-        if (theme == values.LIGHT) {
-            makeToast(theme)
-            setTheme(R.style.light)
-        }
-        if (theme == values.DARK) {
-            makeToast(theme)
-            setTheme(R.style.night)
-        } else {
-            makeToast(theme)
-            setTheme(R.style.Theme_CoronaTracker)
-        }
-        setContentView(R.layout.activity_main)
+        if (theme == values.LIGHT) setTheme(R.style.light)
+        if (theme == values.DARK) setTheme(R.style.night)
+        setTheme(R.style.Theme_CoronaTracker)
+        setContentView(binding.root)
 
+        binding.apply {
+            box=appBarLayout
+            drawer = drawerLayout
+            refreshLayout.run {
+                setOnRefreshListener {
+                    if (country) setCountries() else startIndianState()
+                    CoroutineScope(Main).launch {
+                        delay(500)
+                        isRefreshing = false
+                    }
+                }
+            }
+
+            bottomNavigationView.setOnItemSelectedListener {
+                val itemId = it.itemId
+                if (itemId == R.id.india_info) {
+                    country = false
+                    if (!stateLaunched) {
+                        startIndianState()
+                        stateLaunched = true
+                    } else {
+                        setStateFragment(states, contacts)
+                    }
+                } else if (itemId == R.id.world_info) {
+                    country = true
+                    setCountryFragment(rootList)
+                }
+                true
+            }
+        }
+        viewModel.world.observe(this@MainActivity) { world ->
+            val data = world.data
+            worldBinding.run {
+                totalPopulation.text = data?.totalPopulation
+                confirmedCase.text = data?.confirmed
+                recovered.text = data?.recovered
+                deaths.text = data?.deaths
+                casesToday.text = data?.casesToday
+                activeCases.text = data?.activeCases
+                deathsToday.text = data?.deathsToday
+                criticalCases.text = data?.criticalCases
+                casesPerMillion.text = data?.casesPerMillion
+                deathsPerMillion.text = data?.deathsPerMillion
+            }
+        }
         initializeValues()
 
         // Getting app version
@@ -104,7 +133,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.showOverflowMenu()
-        drawer = findViewById(R.id.drawer_Layout)
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
         val toggle = ActionBarDrawerToggle(
@@ -114,7 +142,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer?.addDrawerListener(toggle)
         toggle.syncState()
         val worldM = NewsApi.world?.create(Methods::class.java)
-
         // setting world information in appBarLayout
         worldM?.getWorld()?.enqueue(object : Callback<world?> {
             override fun onResponse(call: Call<world?>, response: Response<world?>) {
@@ -126,38 +153,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     w.deaths.toString(),
                     w.todayCases.toString(),
                     w.active.toString(),
-                        w.todayDeaths.toString(),
-                        w.critical.toString(),
-                        w.casesPerOneMillion.toString(),
-                        w.deathsPerOneMillion.toString()
-                    )
-                }
+                    w.todayDeaths.toString(),
+                    w.critical.toString(),
+                    w.casesPerOneMillion.toString(),
+                    w.deathsPerOneMillion.toString()
+                )
+            }
 
-                override fun onFailure(call: Call<world?>, t: Throwable) {
-                    Toast.makeText(this@MainActivity, "Unable to load Data", Toast.LENGTH_SHORT).show()
-                }
-            })
+            override fun onFailure(call: Call<world?>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Unable to load Data", Toast.LENGTH_SHORT).show()
+            }
+        })
 
 
         setCountries()
         toolbar.setOnMenuItemClickListener(this)
-        bottomNavigationView!!.setOnNavigationItemSelectedListener { item: MenuItem ->
-            val itemId = item.itemId
-            if (itemId == R.id.india_info) {
-                country = false
-                if (!stateLaunched) {
-                    startIndianState()
-                    stateLaunched = true
-                } else {
-                    setStateFragment(states, contacts)
-                }
-            } else if (itemId == R.id.world_info) {
-                country = true
-                setCountryFragment(rootList)
-            }
-            true
-        }
-        layout!!.setOnRefreshListener(this)
 
         val location = Location(this)
         val locationData = location.getLocation()
@@ -191,13 +201,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun toolClick(view: View) {
         if (expanded) {
             TransitionManager.beginDelayedTransition(box, AutoTransition())
-            moreDataLayout!!.visibility = View.GONE
-            viewMore!!.visibility = View.VISIBLE
+            worldBinding.run {
+                moreDataLayout.visibility = View.GONE
+                viewMore.visibility = View.VISIBLE
+            }
             expanded = false
         } else {
             TransitionManager.beginDelayedTransition(box, AutoTransition())
-            viewMore!!.visibility = View.GONE
-            moreDataLayout!!.visibility = View.VISIBLE
+            worldBinding.run {
+                viewMore.visibility = View.GONE
+                moreDataLayout.visibility = View.VISIBLE
+            }
             expanded = true
         }
     }
@@ -205,53 +219,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     /**
      * Setting world information in appBarLayout
      */
-    private fun setWorld(
-        totalPopulation: String,
-        confirmed: String,
-        recovered: String,
-        deaths: String,
-        casesToday: String,
-        activeCases: String,
-        deathsToday: String,
-        criticalCases: String,
-        casesPerMillion: String,
-        deathsPerMillion: String
-    ) {
-        CoroutineScope(Main).launch {
-            this@MainActivity.totalPopulation!!.text = totalPopulation
-            this@MainActivity.confirmed!!.text = confirmed
-            this@MainActivity.recovered!!.text = recovered
-            this@MainActivity.deaths!!.text = deaths
-            this@MainActivity.casesToday!!.text = casesToday
-            this@MainActivity.activeCases!!.text = activeCases
-            this@MainActivity.deathsToday!!.text = deathsToday
-            this@MainActivity.criticalCases!!.text = criticalCases
-            this@MainActivity.casesPerMillion!!.text = casesPerMillion
-            this@MainActivity.deathsPerMillion!!.text = deathsPerMillion
-        }
-    }
 
     /**
      * Initializing variables
      */
     private fun initializeValues() {
         settingStart()
-        layout = findViewById(R.id.refresh_layout)
-        viewMore = findViewById(R.id.viewMoreText)
-        moreDataLayout = findViewById(R.id.moreDataLayout)
-        box = findViewById(R.id.app_bar_layout)
-        totalPopulation = findViewById(R.id.total_populationNumber)
-        confirmed = findViewById(R.id.confirmedCaseTextView)
-        recovered = findViewById(R.id.recoveredTextView)
-        deaths = findViewById(R.id.deathsTextView)
-        casesToday = findViewById(R.id.casesToday_expandedCard)
-        activeCases = findViewById(R.id.activeCases_expandedCard)
-        deathsToday = findViewById(R.id.deathsToday_expandedCard)
-        criticalCases = findViewById(R.id.criticalCases_expandedCard)
-        casesPerMillion = findViewById(R.id.casesPerMillion_expandedCard)
-        deathsPerMillion = findViewById(R.id.deathsPerMillion_expandedCard)
-        bottomNavigationView = findViewById(R.id.bottom_navigation_view)
-        fragmentContainerView = findViewById(R.id.recycle_fragment_view)
     }
 
     /**
@@ -332,7 +305,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         settingStart();
         val myMethod = NewsApi.indiaState?.create(Methods::class.java)
         if (myMethod != null) {
-            myMethod.getContacts()?.enqueue(object : Callback<stateContacts?> {
+            myMethod.getIndiaStateContacts()?.enqueue(object : Callback<stateContacts?> {
                 override fun onResponse(
                     call: Call<stateContacts?>,
                     response: Response<stateContacts?>
@@ -346,8 +319,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     makeToast("Failed to Get States Contacts")
                 }
             })
-            myMethod.getStates()?.enqueue(object : Callback<indiaStates?> {
-                override fun onResponse(call: Call<indiaStates?>, response: Response<indiaStates?>) {
+            myMethod.getIndiaStates()?.enqueue(object : Callback<indiaStates?> {
+                override fun onResponse(
+                    call: Call<indiaStates?>,
+                    response: Response<indiaStates?>
+                ) {
                     assert(response.body() != null)
                     states = response.body()!!.data.regional
                     setStateFragment(states, contacts)
@@ -366,7 +342,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      */
     private fun setCountries() {
         val method = NewsApi.apiInstance?.create(Methods::class.java)
-        method?.getData()?.enqueue(object : Callback<List<Root?>?> {
+        method?.getCountries()?.enqueue(object : Callback<List<Root?>?> {
             override fun onResponse(call: Call<List<Root?>?>, response: Response<List<Root?>?>) {
                 assert(response.body() != null)
                 setCountryFragment(response.body())
@@ -429,13 +405,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * country fragment it calls setCountries() method and when user is in
      * state fragment it calls startIndianState(
      */
-    override fun onRefresh() {
-        if (country) setCountries() else startIndianState()
-        CoroutineScope(Main).launch {
-            delay(500)
-            layout!!.isRefreshing = false
-        }
-    }
 
     /**
      * @Showing AlertDialog Box for setting theme of the app
@@ -480,6 +449,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             finish()
             startActivity(intent)
         }
+
     companion object {
         const val TAGO = "hello sir"
     }

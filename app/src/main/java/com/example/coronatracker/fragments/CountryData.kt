@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coronatracker.dataClasses.Root
 import java.util.ArrayList
 
+
 class CountryData : Fragment() {
     private var DATA: ArrayList<Root>? = null
     private var adapter: CountryAdapter? = null
