@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coronatracker.adapters.CountryAdapter
 import com.example.coronatracker.databinding.CountryDataBinding
 import com.example.coronatracker.features.TrackViewModel
+import com.example.coronatracker.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,15 +21,11 @@ class CountryData : Fragment() {
     private lateinit var binding: CountryDataBinding
     private var countryAdapter: CountryAdapter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        countryAdapter = CountryAdapter()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        countryAdapter = CountryAdapter()
         binding = CountryDataBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -39,13 +37,12 @@ class CountryData : Fragment() {
                 layoutManager = LinearLayoutManager(context)
                 adapter = countryAdapter
             }
+            viewModel.countries.observe(viewLifecycleOwner){
+                it.data?.let { i -> countryAdapter?.update(i) }
+                progress.isVisible = (it is Resource.Loading && it.data.isNullOrEmpty())
+            }
         }
-        viewModel.countries.observe(viewLifecycleOwner){
-            it.data?.let { i -> countryAdapter?.update(i) }
-        }
-
     }
-
     companion object {
         const val ARG_PARAM1 = "param1"
     }

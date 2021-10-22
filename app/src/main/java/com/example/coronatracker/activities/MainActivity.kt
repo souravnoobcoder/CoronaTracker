@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.Parcelable
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.view.Menu
@@ -19,19 +18,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentContainerView
 import androidx.preference.PreferenceManager
 import com.example.coronatracker.R
 import com.example.coronatracker.R.string
-import com.example.coronatracker.api.Methods
-import com.example.coronatracker.api.NewsApi
-import com.example.coronatracker.dataClasses.Root
 import com.example.coronatracker.dataClasses.values
 import com.example.coronatracker.databinding.ActivityMainBinding
 import com.example.coronatracker.databinding.WorldItemBinding
 import com.example.coronatracker.features.TrackViewModel
 import com.example.coronatracker.fragments.CountryData
 import com.example.coronatracker.fragments.IndiaFragment
-import com.example.coronatracker.fragments.Launching
 import com.example.coronatracker.funtions.Location
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
@@ -40,23 +36,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.*
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    Toolbar.OnMenuItemClickListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener
+     {
 
     private val viewModel: TrackViewModel by viewModels()
     private var expanded = false
     private var pressedOnce = false
     var country = true
     private var stateLaunched = false
-    var rootList: List<Root?>? = null
-    var states: List<Regional?>? = null
-    var contacts: List<com.example.coronatracker.dataClasses.indiaContactModel.Regional?>? = null
+    private lateinit var fragmentContainer : FragmentContainerView
     private var box: AppBarLayout? = null
     private var drawer: DrawerLayout? = null
     private lateinit var binding: ActivityMainBinding
@@ -75,10 +66,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(binding.root)
 
         binding.apply {
+
+            fragmentContainer=recycleFragmentView
             setSupportActionBar(toolbar)
             toolbar.setOnMenuItemClickListener {
                 if (it.itemId == R.id.search_bar_option) {
-                    if (country) startCountrySearch() else startStateSearch()
+                    if (country) launchCountrySearch() else launchIndiaSearch()
                 }
                 true
             }
@@ -104,7 +97,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             drawer = drawerLayout
             refreshLayout.run {
                 setOnRefreshListener {
-                    if (country) setCountries() else startIndianState()
+                    if (country) launchCountryFragment() else launchIndiaFragment()
                     CoroutineScope(Main).launch {
                         delay(500)
                         isRefreshing = false
@@ -116,15 +109,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val itemId = it.itemId
                 if (itemId == R.id.india_info) {
                     country = false
-                    if (!stateLaunched) {
-                        startIndianState()
-                        stateLaunched = true
-                    } else {
-                        setStateFragment(states, contacts)
-                    }
+                   launchIndiaFragment()
                 } else if (itemId == R.id.world_info) {
                     country = true
-                    setCountryFragment(rootList)
+                    launchCountryFragment()
                 }
                 true
             }
@@ -160,8 +148,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer?.addDrawerListener(toggle)
         toggle.syncState()
 
-        setCountries()
-        toolbar.setOnMenuItemClickListener(this)
+        launchCountryFragment()
+       // toolbar.setOnMenuItemClickListener(this)
 
         val location = Location(this)
         val locationData = location.getLocation()
@@ -194,27 +182,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      */
 
 
-    /**
-     * Setting world information in appBarLayout
-     */
-
 
     /**
      * Launching country fragment and passing  list of countries
      * with animation
      */
-    fun setCountryFragment(countries: List<Root?>?) {
-        val args = Bundle()
-        args.putParcelableArrayList(
-            CountryData.ARG_PARAM1,
-            countries as ArrayList<out Parcelable?>?
-        )
+    private fun launchCountryFragment() {
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.enter_from_left,
                 R.anim.exit_to_left
             ) // enter    exit   pop enter pop exit
-            .replace(R.id.recycle_fragment_view, CountryData::class.java, args)
+            .replace(fragmentContainer.id,CountryData::class.java,null)
             .commitAllowingStateLoss()
     }
 
@@ -222,32 +201,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * Launching state fragment and list of contacts and states
      * with animation
      */
-    fun setStateFragment(
-        states: List<Regional?>?,
-        contacts: List<com.example.coronatracker.dataClasses.indiaContactModel.Regional?>?
-    ) {
-        val args = Bundle()
-        args.putParcelableArrayList(
-            getString(string.state_key),
-            states as ArrayList<out Parcelable?>?
-        )
-        args.putParcelableArrayList(
-            getString(string.state_cont_key),
-            contacts as ArrayList<out Parcelable?>?
-        )
+    private fun launchIndiaFragment() {
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
-            .replace(R.id.recycle_fragment_view, IndiaFragment::class.java, args)
-            .commit()
-    }
-
-    /**
-     * Launches Loading fragment
-     */
-    private fun settingStart() {
-        supportFragmentManager.beginTransaction()
-            .setReorderingAllowed(false)
-            .replace(R.id.recycle_fragment_view, Launching::class.java, null)
+            .replace(fragmentContainer.id, IndiaFragment::class.java,null)
             .commit()
     }
 
@@ -271,63 +228,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     /**
-     * fetches states and contacts data from api and give this data to setStateFragment() function which launches fragment
-     */
-    private fun startIndianState() {
-        settingStart();
-        val myMethod = NewsApi.indiaState?.create(Methods::class.java)
-        if (myMethod != null) {
-            myMethod.getIndiaStateContacts()?.enqueue(object : Callback<stateContacts?> {
-                override fun onResponse(
-                    call: Call<stateContacts?>,
-                    response: Response<stateContacts?>
-                ) {
-                    assert(response.body() != null)
-                    contacts = response.body()!!.data.contacts.regional
-
-                }
-
-                override fun onFailure(call: Call<stateContacts?>, t: Throwable) {
-                    makeToast("Failed to Get States Contacts")
-                }
-            })
-            myMethod.getIndiaStates()?.enqueue(object : Callback<indiaStates?> {
-                override fun onResponse(
-                    call: Call<indiaStates?>,
-                    response: Response<indiaStates?>
-                ) {
-                    assert(response.body() != null)
-                    states = response.body()!!.data.regional
-                    setStateFragment(states, contacts)
-                }
-
-                override fun onFailure(call: Call<indiaStates?>, t: Throwable) {
-                    makeToast("Failed to Get States")
-                }
-            })
-        }
-
-    }
-
-    /**
-     * fetches country data from api and give this data to setCountry() function which launches fragment
-     */
-    private fun setCountries() {
-        val method = NewsApi.apiInstance?.create(Methods::class.java)
-        method?.getCountries()?.enqueue(object : Callback<List<Root?>?> {
-            override fun onResponse(call: Call<List<Root?>?>, response: Response<List<Root?>?>) {
-                assert(response.body() != null)
-                setCountryFragment(response.body())
-                rootList = response.body()
-            }
-
-            override fun onFailure(call: Call<List<Root?>?>, t: Throwable) {
-                makeToast("Unable to load Data")
-            }
-        })
-    }
-
-    /**
      * Initializing search icon which is on the AppBarLayout
      */
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
@@ -340,34 +240,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * and country fragment  is opened it invokes startCountrySearch() method
      * and if state fragment  is opened it invokes startStateSearch() method
      */
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        if (item.itemId == R.id.search_bar_option) {
-            if (country) startCountrySearch() else startStateSearch()
-        }
-        return true
-    }
+//    override fun onMenuItemClick(item: MenuItem): Boolean {
+//        if (item.itemId == R.id.search_bar_option) {
+//            if (country) launchCountrySearch() else launchIndiaSearch()
+//        }
+//        return true
+//    }
 
     /**
      * @Launching search activity for state search
-     * by passing value state
      */
-    private fun startStateSearch() {
+    private fun launchIndiaSearch() {
         val intent = Intent(this@MainActivity, StateSearchHandle::class.java)
-        intent.putExtra(values.COUNTRY_INTENT, "state")
         startActivity(intent)
     }
 
     /**
      * @Launching search activity for country search
-     * by passing value country
      */
-    private fun startCountrySearch() {
+    private fun launchCountrySearch() {
         val intent = Intent(this@MainActivity, StateSearchHandle::class.java)
-        intent.putParcelableArrayListExtra(
-            values.COUNTRY_VAL,
-            rootList as ArrayList<out Parcelable?>?
-        )
-        intent.putExtra(values.COUNTRY_INTENT, "country")
         startActivity(intent)
     }
 
