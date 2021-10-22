@@ -17,7 +17,7 @@ data class WholeWorld(
     val deathsPerMillion: String?
 ) {
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0
+    var id: Long = 0
 }
 @Entity(tableName = "Country")
 data class Country(
@@ -35,7 +35,7 @@ data class Country(
     val deathsPerMillion: String?
 ) {
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0
+    var id: Long = 0
 }
 
 @Entity(tableName = "India")
@@ -49,5 +49,5 @@ data class India(
     val activeCases: String?
 ) {
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0
+    var id: Long = 0
 }

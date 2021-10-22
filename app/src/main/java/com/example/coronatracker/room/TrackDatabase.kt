@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [World::class,Country::class,India::class],
+    entities = [WholeWorld::class,Country::class,India::class],
     version = 2,
     exportSchema = false
 )

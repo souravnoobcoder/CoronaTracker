@@ -14,12 +14,13 @@ import com.example.coronatracker.databinding.ActivitySearchHandleBinding
 import com.example.coronatracker.features.TrackViewModel
 import com.example.coronatracker.room.Country
 import com.google.android.material.textfield.TextInputEditText
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
-
+@AndroidEntryPoint
 class CountrySearch : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchHandleBinding

@@ -2,6 +2,7 @@ package com.example.coronatracker.features
 
 import androidx.room.withTransaction
 import com.example.coronatracker.api.Methods
+import com.example.coronatracker.dataClasses.Constants
 import com.example.coronatracker.room.Country
 import com.example.coronatracker.room.India
 import com.example.coronatracker.room.TrackDatabase
@@ -10,9 +11,9 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class TrackRepository @Inject constructor(
-    @Named(Methods.INDIA_API) private val indiaApi: Methods,
-    @Named(Methods.WORLD_API) private val worldApi: Methods,
-    @Named(Methods.COUNTRY_API) private val countryApi: Methods,
+    @Named(Constants.INDIA_API) private val indiaApi: Methods,
+    @Named(Constants.WORLD_API) private val worldApi: Methods,
+    @Named(Constants.COUNTRY_API) private val countryApi: Methods,
     private val database: TrackDatabase
 ) {
     private val dao = database.trackDao()

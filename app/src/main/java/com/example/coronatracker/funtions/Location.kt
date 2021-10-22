@@ -10,7 +10,6 @@ import android.location.Location
 import android.os.Build
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-
 import androidx.preference.PreferenceManager
 import com.example.coronatracker.dataClasses.LocationData
 import com.google.android.gms.location.FusedLocationProviderClient

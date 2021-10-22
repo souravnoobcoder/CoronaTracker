@@ -18,7 +18,7 @@ fun getWorldObject(world: World) = WholeWorld(
         world.deathsPerOneMillion.toString()
 )
 
-fun getIndiaObject(regional: regional, number: Regional) = India(
+fun getIndiaObject(regional: Regiona, number: Regional) = India(
         regional.loc,
         regional.confirmedCasesForeign.toString(),
         regional.discharged.toString(),
@@ -54,7 +54,7 @@ fun getCountryList(countries: List<Root>) =
                 listOfCountries.toList()
         }
 
-fun getStateList(indiaStates: MutableList<regional?>?, stateContacts: MutableList<Regional>?) =
+fun getStateList(indiaStates: MutableList<Regiona?>?, stateContacts: MutableList<Regional>?) =
         run {
                 val indices = indiaStates?.indices
                 val stateList: MutableList<India> = ArrayList()
@@ -73,5 +73,49 @@ fun getStateList(indiaStates: MutableList<regional?>?, stateContacts: MutableLis
                 }
                 stateList.toList()
         }
+/**
+ * @return index on which
+ * @param state is present in
+ * @param list
+ */
+fun getStateIndex(list: List<Regiona>, state:String) : Int{
+        var i=0
+        while (i<list.size){
+                if (list[i].loc==state)
+                        return i
+                i++
+        }
+        return -1
+}
 
+/**
+ * @return index on which
+ * @param state is present in
+ * @param list
+ */
+fun getStateContactIndex(list: List<Regional>,
+                         state:String) : Int{
+        var i=0
+        while (i<list.size){
+                if (list[i].loc==state)
+                        return i
+                i++
+        }
+        return -1
+}
+
+/**
+ * @return index on which
+ * @param country is present in
+ * @param list
+ */
+fun getCountryIndex(list: List<Root>,country : String) : Int{
+        var i=0
+        while (i<list.size){
+                if (list[i].country==country)
+                        return i
+                i++
+        }
+        return -1
+}
 

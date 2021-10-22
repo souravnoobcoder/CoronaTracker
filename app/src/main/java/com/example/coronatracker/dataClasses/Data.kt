@@ -6,10 +6,6 @@ data class Contacts (
     val primary: Primary?,
     val regional: List<Regional>?
 )
-data class Regional(
-    val loc: String? ,
-    val number: String?
-)
 data class Primary(
     val number: String? ,
     val numberTollfree: String? ,

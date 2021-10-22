@@ -3,12 +3,15 @@ package com.example.coronatracker.dI
 import android.content.Context
 import androidx.room.Room
 import com.example.coronatracker.api.Methods
-import com.example.coronatracker.api.Methods.Companion.COUNTRY
-import com.example.coronatracker.api.Methods.Companion.COUNTRY_API
-import com.example.coronatracker.api.Methods.Companion.INDIA
-import com.example.coronatracker.api.Methods.Companion.INDIA_API
-import com.example.coronatracker.api.Methods.Companion.WORLD
-import com.example.coronatracker.api.Methods.Companion.WORLD_API
+import com.example.coronatracker.dataClasses.Constants.BASE_COUNTRY_URL
+import com.example.coronatracker.dataClasses.Constants.COUNTRY
+import com.example.coronatracker.dataClasses.Constants.COUNTRY_API
+import com.example.coronatracker.dataClasses.Constants.INDIA
+import com.example.coronatracker.dataClasses.Constants.INDIA_API
+import com.example.coronatracker.dataClasses.Constants.INDIA_URL
+import com.example.coronatracker.dataClasses.Constants.WORLD
+import com.example.coronatracker.dataClasses.Constants.WORLD_API
+import com.example.coronatracker.dataClasses.Constants.WORLD_URL
 import com.example.coronatracker.room.TrackDatabase
 import dagger.Module
 import dagger.Provides
@@ -30,7 +33,7 @@ object AppModule {
     @Named(INDIA)
     fun provideIndiaRetrofit(): Retrofit =
         Retrofit.Builder()
-            .baseUrl(Methods.INDIA_URL)
+            .baseUrl(INDIA_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -39,7 +42,7 @@ object AppModule {
     @Named(WORLD)
     fun provideWorldRetrofit(): Retrofit =
         Retrofit.Builder()
-            .baseUrl(Methods.WORLD_URL)
+            .baseUrl(WORLD_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -48,7 +51,7 @@ object AppModule {
     @Named(COUNTRY)
     fun provideCountryRetrofit(): Retrofit =
         Retrofit.Builder()
-            .baseUrl(Methods.BASE_COUNTRY_URL)
+            .baseUrl(BASE_COUNTRY_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

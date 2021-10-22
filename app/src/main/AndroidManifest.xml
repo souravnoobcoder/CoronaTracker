@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoronaTracker">
         <activity
-            android:name=".activities.StateSearchHandle"
+            android:name=".activities.StateSearch"
             android:exported="true" />
         <activity
             android:name=".activities.MainActivity"

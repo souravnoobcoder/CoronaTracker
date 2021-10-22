@@ -9,13 +9,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.coronatracker.R
 import com.example.coronatracker.adapters.StateAdapter
 import com.example.coronatracker.databinding.FragmentIndiaStateBinding
 import com.example.coronatracker.features.TrackViewModel
 import com.example.coronatracker.util.Resource
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class IndiaFragment : Fragment() {
 
     private val viewModel: TrackViewModel by viewModels()

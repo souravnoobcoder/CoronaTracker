@@ -7,19 +7,18 @@ import android.text.TextWatcher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.coronatracker.R
 import com.example.coronatracker.adapters.StateAdapter
 import com.example.coronatracker.databinding.ActivitySearchHandleBinding
 import com.example.coronatracker.features.TrackViewModel
 import com.example.coronatracker.room.*
 import com.google.android.material.textfield.TextInputEditText
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.util.*
-
-class StateSearchHandle : AppCompatActivity() {
+@AndroidEntryPoint
+class StateSearch : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchHandleBinding
     private val viewModel: TrackViewModel by viewModels()
@@ -40,7 +39,7 @@ class StateSearchHandle : AppCompatActivity() {
         binding.run {
             inputEditText=searchBar
             searchedCountries.run {
-                layoutManager = LinearLayoutManager(this@StateSearchHandle)
+                layoutManager = LinearLayoutManager(this@StateSearch)
                 adapter=stateAdapter
             }
         }

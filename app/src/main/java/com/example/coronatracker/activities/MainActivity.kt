@@ -16,13 +16,14 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentContainerView
 import androidx.preference.PreferenceManager
 import com.example.coronatracker.R
 import com.example.coronatracker.R.string
-import com.example.coronatracker.dataClasses.values
+import com.example.coronatracker.dataClasses.Constants
 import com.example.coronatracker.databinding.ActivityMainBinding
 import com.example.coronatracker.databinding.WorldItemBinding
 import com.example.coronatracker.features.TrackViewModel
@@ -46,7 +47,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var expanded = false
     private var pressedOnce = false
     var country = true
-    private var stateLaunched = false
     private lateinit var fragmentContainer : FragmentContainerView
     private var box: AppBarLayout? = null
     private var drawer: DrawerLayout? = null
@@ -55,13 +55,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        worldBinding = WorldItemBinding.bind(binding.root)
+        worldBinding = binding.world
         /**
          * Setting theme of app by checking in sharedPreferences
          */
         val theme = themeStatus
-        if (theme == values.LIGHT) setTheme(R.style.light)
-        if (theme == values.DARK) setTheme(R.style.night)
+        if (theme == Constants.LIGHT) setTheme(R.style.light)
+        if (theme == Constants.DARK) setTheme(R.style.night)
         setTheme(R.style.Theme_CoronaTracker)
         setContentView(binding.root)
 
@@ -150,11 +150,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         launchCountryFragment()
        // toolbar.setOnMenuItemClickListener(this)
-
-        val location = Location(this)
-        val locationData = location.getLocation()
-        print(" country : ${locationData.country}  state : ${locationData.state}")
-        makeToast(" country : ${locationData.country}  state : ${locationData.state}")
+//
+//        val location = Location(this)
+//        val locationData = location.getLocation()
+//        print(" country : ${locationData.country}  state : ${locationData.state}")
+//        makeToast(" country : ${locationData.country}  state : ${locationData.state}")
     }
 
     /**
@@ -223,7 +223,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun makeToast(message: String?) {
+    private fun makeToast(message: String?) {
         Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
     }
 
@@ -251,7 +251,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * @Launching search activity for state search
      */
     private fun launchIndiaSearch() {
-        val intent = Intent(this@MainActivity, StateSearchHandle::class.java)
+        val intent = Intent(this@MainActivity, StateSearch::class.java)
         startActivity(intent)
     }
 
@@ -259,7 +259,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * @Launching search activity for country search
      */
     private fun launchCountrySearch() {
-        val intent = Intent(this@MainActivity, StateSearchHandle::class.java)
+        val intent = Intent(this@MainActivity, StateSearch::class.java)
         startActivity(intent)
     }
 
@@ -279,8 +279,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val dark = themeView.findViewById<RadioButton>(R.id.dark_theme)
         val light = themeView.findViewById<RadioButton>(R.id.light_theme)
         val defaultTheme = themeView.findViewById<RadioButton>(R.id.default_theme)
-        if (themeStatus == values.LIGHT) light.isChecked = true
-        if (themeStatus == values.DARK) dark.isChecked = true else defaultTheme.isChecked = true
+        if (themeStatus == Constants.LIGHT) light.isChecked = true
+        if (themeStatus == Constants.DARK) dark.isChecked = true else defaultTheme.isChecked = true
         setContentView(R.layout.activity_main)
         val dialog = AlertDialog.Builder(this)
             .setView(themeView)
@@ -288,7 +288,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .setCancelable(false)
             .setPositiveButton("OK") { _, _ ->
                 themeStatus =
-                    if (light.isChecked) values.LIGHT else if (dark.isChecked) values.DARK else values.DEFAULT
+                    if (light.isChecked) Constants.LIGHT else if (dark.isChecked) Constants.DARK else Constants.DEFAULT
             }
             .create()
         dialog.show()
@@ -302,13 +302,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         get() {
             val sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(applicationContext)
-            return sharedPreferences.getString(values.NEW_KEY, values.LIGHT)
+            return sharedPreferences.getString(Constants.NEW_KEY, Constants.LIGHT)
         }
         set(mode) {
             val sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(applicationContext)
             val editor = sharedPreferences.edit()
-            editor.putString(values.NEW_KEY, mode)
+            editor.putString(Constants.NEW_KEY, mode)
             editor.apply()
             finish()
             startActivity(intent)
