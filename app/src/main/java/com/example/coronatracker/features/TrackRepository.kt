@@ -1,5 +1,6 @@
 package com.example.coronatracker.features
 
+import android.util.Log
 import androidx.room.withTransaction
 import com.example.coronatracker.api.Methods
 import com.example.coronatracker.dataClasses.Constants
@@ -23,9 +24,11 @@ class TrackRepository @Inject constructor(
             dao.getWorld()
         },
         fetch = {
-            worldApi.getWorld()
+           Log.v("this is ","fetch")
+           worldApi.getWorld()
         },
         saveFetchResult = { world ->
+            Log.v("this is ","shouldFetch")
             database.withTransaction {
                 dao.deleteWorldAll()
                 dao.insertWorld(getWorldObject(world))

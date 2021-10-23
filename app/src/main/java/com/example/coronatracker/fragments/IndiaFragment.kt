@@ -2,6 +2,7 @@ package com.example.coronatracker.fragments
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,12 +34,13 @@ class IndiaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val stateAdapter = StateAdapter()
-        binding.run {
-            stateRecycle.run {
+        binding.apply {
+            stateRecycle.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = stateAdapter
             }
             viewModel.india.observe(viewLifecycleOwner){
+                it.error?.printStackTrace()
                 it?.data?.let { i-> stateAdapter.update(i) }
                 progress.isVisible = (it is Resource.Loading && it.data.isNullOrEmpty())
             }

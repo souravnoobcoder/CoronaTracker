@@ -28,7 +28,7 @@ class CountryAdapter : RecyclerView.Adapter<CountryAdapter.ViewHold>() {
 
     override fun onBindViewHolder(holder: ViewHold, position: Int) {
         val country = countries[position]
-        holder.itemBinding.run {
+        holder.itemBinding.apply {
             locationName.text = country.country
             confirmedCase.text = country.confirmed
             recovered.text = country.recovered

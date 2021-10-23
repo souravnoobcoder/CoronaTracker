@@ -32,8 +32,8 @@ class CountryData : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.run {
-            recycle.run {
+        binding.apply {
+            recycle.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = countryAdapter
             }

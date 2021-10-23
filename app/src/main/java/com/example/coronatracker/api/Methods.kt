@@ -11,17 +11,17 @@ interface Methods {
 
     // fetches countries data from api
     @GET("covid-19/countries")
-    fun getCountries(): List<Root>
+    suspend fun getCountries(): List<Root>
 
     // fetches world statistics on corona from api
     @GET("all?yesterday")
-    fun getWorld(): World
+    suspend fun getWorld(): World
 
     // fetches contacts of indian states
     @GET("covid19-in/contacts")
-    fun getIndiaStateContacts(): StateContacts
+    suspend fun getIndiaStateContacts(): StateContacts
 
     // fetches indian state data form api
     @GET("covid19-in/stats/latest")
-    fun getIndiaStates(): indiaStates
+    suspend fun getIndiaStates(): indiaStates
 }

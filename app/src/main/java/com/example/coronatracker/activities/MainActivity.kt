@@ -41,7 +41,7 @@ import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener
-     {
+     , Toolbar.OnMenuItemClickListener{
 
     private val viewModel: TrackViewModel by viewModels()
     private var expanded = false
@@ -66,9 +66,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(binding.root)
 
         binding.apply {
-
+            val toolbar=toolbar
             fragmentContainer=recycleFragmentView
-            setSupportActionBar(toolbar)
             toolbar.setOnMenuItemClickListener {
                 if (it.itemId == R.id.search_bar_option) {
                     if (country) launchCountrySearch() else launchIndiaSearch()
@@ -78,14 +77,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             appBarLayout.setOnClickListener{
                 if (expanded) {
                     TransitionManager.beginDelayedTransition(appBarLayout, AutoTransition())
-                    worldBinding.run {
+                    worldBinding.apply {
                         moreDataLayout.visibility = View.GONE
                         viewMore.visibility = View.VISIBLE
                     }
                     expanded = false
                 } else {
                     TransitionManager.beginDelayedTransition(appBarLayout, AutoTransition())
-                    worldBinding.run {
+                    worldBinding.apply {
                         viewMore.visibility = View.GONE
                         moreDataLayout.visibility = View.VISIBLE
                     }
@@ -95,7 +94,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             box=appBarLayout
 
             drawer = drawerLayout
-            refreshLayout.run {
+            refreshLayout.apply {
                 setOnRefreshListener {
                     if (country) launchCountryFragment() else launchIndiaFragment()
                     CoroutineScope(Main).launch {
@@ -119,7 +118,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         viewModel.world.observe(this@MainActivity) { world ->
             val data = world.data
-            worldBinding.run {
+            worldBinding.apply {
                 totalPopulation.text = data?.totalPopulation
                 confirmedCase.text = data?.confirmed
                 recovered.text = data?.recovered
@@ -130,6 +129,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 criticalCases.text = data?.criticalCases
                 casesPerMillion.text = data?.casesPerMillion
                 deathsPerMillion.text = data?.deathsPerMillion
+                world.error?.printStackTrace()
             }
         }
 
@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         launchCountryFragment()
-       // toolbar.setOnMenuItemClickListener(this)
+       toolbar.setOnMenuItemClickListener(this)
 //
 //        val location = Location(this)
 //        val locationData = location.getLocation()
@@ -240,12 +240,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * and country fragment  is opened it invokes startCountrySearch() method
      * and if state fragment  is opened it invokes startStateSearch() method
      */
-//    override fun onMenuItemClick(item: MenuItem): Boolean {
-//        if (item.itemId == R.id.search_bar_option) {
-//            if (country) launchCountrySearch() else launchIndiaSearch()
-//        }
-//        return true
-//    }
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        if (item.itemId == R.id.search_bar_option) {
+            if (country) launchCountrySearch() else launchIndiaSearch()
+        }
+        return true
+    }
 
     /**
      * @Launching search activity for state search

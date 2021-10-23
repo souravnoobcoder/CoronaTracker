@@ -60,14 +60,16 @@ fun getStateList(indiaStates: MutableList<Regiona?>?, stateContacts: MutableList
                 val stateList: MutableList<India> = ArrayList()
                 for (i in indices!!) {
                         indiaStates[i]?.loc?.run {
-                                for (j in 0 until stateContacts!!.size) {
+                                var j =0;
+                                while (j< stateContacts?.size!!){
                                         if (this == stateContacts[j].loc){
                                                 stateList.add(getIndiaObject(
                                                         indiaStates[i]!!,
                                                         stateContacts[j]
                                                 ))
-                                                stateContacts.removeAt(j)
                                         }
+                                        stateContacts.removeAt(j)
+                                        j++
                                 }
                         }
                 }

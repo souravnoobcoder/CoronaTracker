@@ -41,7 +41,7 @@ class CountrySearch : AppCompatActivity() {
         setCountryList()
         binding.run {
             inputEditText=searchBar
-            searchedCountries.run {
+            searchedCountries.apply {
                 layoutManager=LinearLayoutManager(this@CountrySearch)
                 adapter=countryAdapter
             }

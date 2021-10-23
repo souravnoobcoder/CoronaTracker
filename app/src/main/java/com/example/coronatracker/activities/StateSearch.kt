@@ -38,7 +38,7 @@ class StateSearch : AppCompatActivity() {
         setStateList()
         binding.run {
             inputEditText=searchBar
-            searchedCountries.run {
+            searchedCountries.apply {
                 layoutManager = LinearLayoutManager(this@StateSearch)
                 adapter=stateAdapter
             }

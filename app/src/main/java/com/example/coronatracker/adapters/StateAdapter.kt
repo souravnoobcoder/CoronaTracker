@@ -25,7 +25,7 @@ class StateAdapter : RecyclerView.Adapter<StateAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val state = india[position]
-        holder.itemBinding.run {
+        holder.itemBinding.apply {
             locationName.text = state.loc
             helpline.text = state.number
             confirmedCase.text = state.totalConfirmed
